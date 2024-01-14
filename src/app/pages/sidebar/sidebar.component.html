@@ -1,0 +1,63 @@
+<form [formGroup]="cardForm" (ngSubmit)="onFormSubmit($event)">
+	<mat-card>
+		<mat-card-header>
+			<mat-card-title>Information</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<block-flow>
+				<block-row>
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Name</mat-label>
+						<input type="text" formControlName="name" matInput>
+					</mat-form-field>
+				
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Type</mat-label>
+						<mat-select formControlName="type">
+							<mat-option value="cantrip">Cantrip</mat-option>
+							<mat-option value="spell">Spell</mat-option>
+							<mat-option value="item">Item</mat-option>
+						</mat-select>
+					</mat-form-field>
+				
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Level</mat-label>
+						<input formControlName="level" matInput>
+					</mat-form-field>
+				</block-row>
+			</block-flow>
+		</mat-card-content>
+	</mat-card>
+	
+	<mat-card>
+		<mat-card-header>
+			<mat-card-title>Traits</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<block-flow>
+				<block-row>
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Name</mat-label>
+						<input type="text" formControlName="name" matInput>
+					</mat-form-field>
+				
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Type</mat-label>
+						<mat-select formControlName="type">
+							<mat-option value="cantrip">Cantrip</mat-option>
+							<mat-option value="spell">Spell</mat-option>
+							<mat-option value="item">Item</mat-option>
+						</mat-select>
+					</mat-form-field>
+				
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Level</mat-label>
+						<input formControlName="level" matInput>
+					</mat-form-field>
+				</block-row>
+			</block-flow>
+		</mat-card-content>
+	</mat-card>
+
+	<button value="save" mat-stroked-button>Log</button>
+</form>

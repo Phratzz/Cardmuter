@@ -1,0 +1,10 @@
+//angular material v11 which uses @import syntax 
+@import '~@angular/material/theming';//notice that the file imported is also different
+@include mat-core();
+
+$primary: mat-palette($mat-purple, 500); //notice that functions not Namespaced
+$accent:  mat-palette($mat-green, A200, A100, A400);
+$warn:    mat-palette($mat-red);
+$theme: mat-dark-theme($primary, $accent, $warn);
+
+@include angular-material-theme($theme);

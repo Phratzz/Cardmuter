@@ -1,1 +1,74 @@
-/* You can add global styles to this file, and also import other style files */
+html,body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #222;
+    color: #fff;
+}
+
+@import './palette';
+
+
+@font-face {
+    font-family: 'GoodPro';
+    src: url('/assets/fonts/GoodPro.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GoodPro-Bold';
+    src: url('/assets/fonts/GoodPro-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GoodPro-Italic';
+    src: url('/assets/fonts/GoodPro-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GoodPro-CondBold';
+    src: url('/assets/fonts/GoodPro-CondBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'PF2-Action';
+    src: url('/assets/fonts/PF2-Action.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Variables */
+html {
+	--spacing: 8px;
+	--spacing-half: 4px;
+}
+
+form {
+	mat-form-field {
+		width: 100%;
+
+		.mat-form-field-wrapper {
+			padding-bottom: 0px;
+		}
+		
+		.mat-form-field-infix {
+			width: auto;
+		}
+
+		input:read-only {
+			pointer-events: none;
+		}
+	}
+
+	button {
+		margin-block: .25em !important;
+		padding-inline: 0 !important;
+	}
+	
+	textarea {
+		resize: none !important;
+	}
+}
