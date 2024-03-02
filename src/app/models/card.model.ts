@@ -9,13 +9,13 @@ export class Card {
     footer: (CardBodyFluff | CardBodyText | CardBodyAbility)[];
 
     constructor(
-        frame: 'item' | 'spell' | 'creature' | 'resource' | 'recipe',
-        name: string,
-        puctureHole: boolean,
-        type: string,
-        traits: CardTrait[],
-        header: CardHeaderItem[][],
-        body: (CardBodyFluff | CardBodyText | CardBodyAbility)[],
+        frame: ('item' | 'spell' | 'creature' | 'resource' | 'recipe') = 'item',
+        name: string = '',
+        puctureHole: boolean = false,
+        type: string = '',
+        traits: CardTrait[] = [],
+        header: CardHeaderItem[][] = [],
+        body: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
         footer: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
     ) {
         this.frame = frame;
@@ -39,6 +39,27 @@ export class CardTrait {
     ) {
         this.name = name;
         this.type = type;
+    }
+
+    public getColor(): string {
+        switch (this.type) {
+            case 'common':
+                return '#58180d';
+            case 'uncommon':
+                return '#98513d';
+            case 'rare':
+                return '#002664';
+            case 'unique':
+                return '#800080';
+
+            case 'size':
+                return '#3b7b59';
+            case 'alignment':
+                return '#576293';
+            case 'weapon':
+                return '#505050';
+        }
+    
     }
 }
 

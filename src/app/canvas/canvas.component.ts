@@ -1,5 +1,6 @@
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
 import { Card, CardBodyFluff, CardBodyText, CardBodyAbility, CardTrait, CardHeaderItem, CardBodyAbilityHeightened } from '../models/card.model';
+import { RenderService } from '../services/render.service';
 
 @Component({
   selector: 'app-canvas',
@@ -18,132 +19,7 @@ export class CanvasComponent implements OnInit {
 		splash: "4",
 	}
 
-	data = new Card(
-		//'resource',
-		//'item',
-		'recipe',
-		//'spell',
-		//'creature',
-
-		'Alchemist\'s Fire (' + this.vars.type + ')', false,
-		'Formula ' + this.vars.level,
-		[
-			//new CardTrait('Uncommon', 'uncommon'),
-			// new CardTrait('Rare', 'rare'),
-
-			//new CardTrait('Attack'),
-			new CardTrait('Alchemical'),
-			new CardTrait('Bomb'),
-			//new CardTrait('Cantrip'),
-			new CardTrait('Consumable'),
-			// new CardTrait('Elixir'),
-			//new CardTrait('Invested'),
-			//new CardTrait('Magical'),
-			//new CardTrait('Talisman'),
-			//new CardTrait('Trap'),
-			//new CardTrait('Potion'),
-			//new CardTrait('Resource'),
-			new CardTrait('Formula'),
-
-			// new CardTrait('Abjuration'),
-			//new CardTrait('Cold'),
-			//new CardTrait('Devil'),
-			//new CardTrait('Emotion'),
-			//new CardTrait('Earth'),
-			//new CardTrait('Enchantment'),
-			//new CardTrait('Evocation'),
-			// new CardTrait('Fire'),
-			// new CardTrait('Healing'),
-			//new CardTrait('Mental'),
-			//new CardTrait('Necromancy'),
-			// new CardTrait('Olfactory'),
-			// new CardTrait('Poison'),
-			// new CardTrait('Splash'),
-			//new CardTrait('Transmutation'),
-			//new CardTrait('Water'),
-		],
-		[
-			[
-				//new CardHeaderItem('Usage', 'affixed to armor'),
-				new CardHeaderItem('Usage', 'held in 1 hand'),
-				//new CardHeaderItem('Usage', 'worn gloves'),
-			],
-			[
-				new CardHeaderItem('Crafting Cost', this.vars.cost),
-			],
-			[
-				// new CardHeaderItem('Bulk', '—'),
-				// new CardHeaderItem('Bulk', 'L'),
-				// new CardHeaderItem('Bulk', 'L (when not activated)'),
-			],
-			[
-				// new CardHeaderItem('Activate', 'Strike', '1'),
-				// new CardHeaderItem('Activate', 'Interact', '1'),
-				//new CardHeaderItem('Activate', 'Interact', '3'),
-			],
-
-
-			[
-				//new CardHeaderItem('Tradtitions', 'Arcane, Primal'),
-			],
-			[
-				//new CardHeaderItem('Cast', 'Somatic, Verbal', '2'),
-			],
-			[
-				//new CardHeaderItem('Range', '120 feet'),
-				//new CardHeaderItem('Range', '30 feet'),
-				//new CardHeaderItem('Area', '15 feet cone'),
-				
-				//new CardHeaderItem('Targets', '1 Creature'),
-				//new CardHeaderItem('Saving Throw', 'Reflex'),
-			],
-		],
-		[
-			new CardBodyFluff(
-				'Alchemist’s fire is a combination of volatile liquids that ignite when exposed to air. Alchemist’s fire is a combination of volatile liquids that ignite when exposed to air.',
-			),
-			new CardBodyText(
-				[
-					'Alchemist’s fire grant a ' + this.vars.bonus + ' item bonus to attack rolls, and deals ' + this.vars.damage + ' fire damage, ' + this.vars.splash + ' persistent fire damage, and ' + this.vars.splash + ' splash damage.',
-					'peepo',
-					'10-foot-diameter circle. You can spend 1 minute as an interact action to deactivate the pattern',
-				].join(' ')
-			),
-			
-			false ? new CardBodyAbility({
-				crit_success: 'The target is unaffected.',
-				success: 'The target is sickened 1.',
-				failure: 'The target is sickened 1 and slowed 1 while sickened.',
-				crit_failure: 'The target is blinded for 1 round, sickened 2, and slowed 1 while sickened.',
-			}) : new CardBodyText(),
-			true ? new CardBodyAbility({
-				// activate: 'Envision', activateAction: 'r',
-				// activate: 'Interact', activateAction: '1',
-				activate: 'Interact', activateAction: '1',
-
-				requirement: 'A gemstone of fitting type and size (see back)',
-				
-				effect: [
-					[
-						'You toss the disc onto the ground. and it expands into a',
-						'10-foot-diameter circle, You can spend 1 minute as an interact action to',
-						'deactivate the array. causing it to fold back into its disc form.',
-					].join(' ')
-				],
-			}) : new CardBodyText(),
-			new CardBodyText(
-			)
-		],
-		[
-			/*
-			new CardBodyAbility({
-				heightened: [
-					new CardBodyAbilityHeightened('+1', 'The damage increases by 2d4.'),
-				],
-			}),
-			*/
-		],
-	)
+	data: Card
 	
 	config = {
 		size: {
@@ -174,19 +50,19 @@ export class CanvasComponent implements OnInit {
 			resource: '#5d5d5d', // grey
 
 			accent: '#dac68a',
-			traits: {
-				common: '#58180d',
-				uncommon: '#98513d',
-				rare: '#002664',
-				unique: '#002664',
-				alignment: '#576293',
-				size: '#3b7b59',
-				weapon: '#505050',
-			}
 		},
 	};
 
 	assets: any
+
+	constructor(
+		renderService: RenderService,
+	) {
+		renderService.card.subscribe((card) => {
+			this.data = card
+			this.render()
+		})
+	}
 
 	// make observable
 	assetsLoaded = false;
@@ -223,6 +99,8 @@ export class CanvasComponent implements OnInit {
 	}
 
 	render() {
+		if(!this.assetsLoaded) return
+
 		const ctx = this.canvas.nativeElement.getContext('2d')
 
 		if (!ctx) {
@@ -355,7 +233,7 @@ export class CanvasComponent implements OnInit {
 			);
 
 			// draw the trait color
-			ctx.fillStyle = this.config.colors.traits[trait.type];
+			ctx.fillStyle = trait.getColor();
 			ctx.fillRect(
 				traitOffset + this.config.size.traitAccentWidth,
 				offset + this.config.size.traitAccentHeight,
