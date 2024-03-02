@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
-import { Card, CardBodyFluff, CardBodyText, CardBodyAbility, CardTrait } from '../models/card.model';
+import { Card, CardBodyFluff, CardBodyText, CardBodyAbility, CardTrait, CardHeaderItem, CardBodyAbilityHeightened } from '../models/card.model';
 
 @Component({
   selector: 'app-canvas',
@@ -9,37 +9,139 @@ import { Card, CardBodyFluff, CardBodyText, CardBodyAbility, CardTrait } from '.
 export class CanvasComponent implements OnInit {
 	@ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
 
+	vars = {
+		type: 'Major',
+		level: 17,
+		cost: '1250gp',
+		bonus: '+3',
+		damage: "4d8",
+		splash: "4",
+	}
+
 	data = new Card(
-		'item',
-		'Lover\'s Knot',
-		'Item 2',
+		//'resource',
+		//'item',
+		'recipe',
+		//'spell',
+		//'creature',
+
+		'Alchemist\'s Fire (' + this.vars.type + ')', false,
+		'Formula ' + this.vars.level,
 		[
-			new CardTrait('Uncommon', 'uncommon'),
+			//new CardTrait('Uncommon', 'uncommon'),
+			// new CardTrait('Rare', 'rare'),
+
+			//new CardTrait('Attack'),
+			new CardTrait('Alchemical'),
+			new CardTrait('Bomb'),
+			//new CardTrait('Cantrip'),
 			new CardTrait('Consumable'),
-			new CardTrait('Magical'),
-			new CardTrait('Talisman'),
-			new CardTrait('Healing'),
-			new CardTrait('Necromancy'),
+			// new CardTrait('Elixir'),
+			//new CardTrait('Invested'),
+			//new CardTrait('Magical'),
+			//new CardTrait('Talisman'),
+			//new CardTrait('Trap'),
+			//new CardTrait('Potion'),
+			//new CardTrait('Resource'),
+			new CardTrait('Formula'),
+
+			// new CardTrait('Abjuration'),
+			//new CardTrait('Cold'),
+			//new CardTrait('Devil'),
+			//new CardTrait('Emotion'),
+			//new CardTrait('Earth'),
+			//new CardTrait('Enchantment'),
+			//new CardTrait('Evocation'),
+			// new CardTrait('Fire'),
+			// new CardTrait('Healing'),
+			//new CardTrait('Mental'),
+			//new CardTrait('Necromancy'),
+			// new CardTrait('Olfactory'),
+			// new CardTrait('Poison'),
+			// new CardTrait('Splash'),
+			//new CardTrait('Transmutation'),
+			//new CardTrait('Water'),
 		],
 		[
 			[
-				{name: 'Usage', value: 'affixed to armor'},
+				//new CardHeaderItem('Usage', 'affixed to armor'),
+				new CardHeaderItem('Usage', 'held in 1 hand'),
+				//new CardHeaderItem('Usage', 'worn gloves'),
 			],
 			[
-				{name: 'Bulk', value: '—'},
+				new CardHeaderItem('Crafting Cost', this.vars.cost),
 			],
 			[
-				{name: 'Price', value: '6gp'},
+				// new CardHeaderItem('Bulk', '—'),
+				// new CardHeaderItem('Bulk', 'L'),
+				// new CardHeaderItem('Bulk', 'L (when not activated)'),
+			],
+			[
+				// new CardHeaderItem('Activate', 'Strike', '1'),
+				// new CardHeaderItem('Activate', 'Interact', '1'),
+				//new CardHeaderItem('Activate', 'Interact', '3'),
+			],
+
+
+			[
+				//new CardHeaderItem('Tradtitions', 'Arcane, Primal'),
+			],
+			[
+				//new CardHeaderItem('Cast', 'Somatic, Verbal', '2'),
+			],
+			[
+				//new CardHeaderItem('Range', '120 feet'),
+				//new CardHeaderItem('Range', '30 feet'),
+				//new CardHeaderItem('Area', '15 feet cone'),
+				
+				//new CardHeaderItem('Targets', '1 Creature'),
+				//new CardHeaderItem('Saving Throw', 'Reflex'),
 			],
 		],
 		[
-			new CardBodyFluff('This lock of hair is wrapped around a twig twisted into the shape of a heart. Popular among many of Restov\'s explorers, traders, and mercenaries, often a person carries several lover\'s knots on their person in case of emergency.'),
-			new CardBodyFluff('While the original lover\'s knots were specific rewards granted by a particularly flirtatious Swordlord to her favored agents, time has seen these talismans become much more widespread through southern Brevoy'),
+			new CardBodyFluff(
+				'Alchemist’s fire is a combination of volatile liquids that ignite when exposed to air. Alchemist’s fire is a combination of volatile liquids that ignite when exposed to air.',
+			),
+			new CardBodyText(
+				[
+					'Alchemist’s fire grant a ' + this.vars.bonus + ' item bonus to attack rolls, and deals ' + this.vars.damage + ' fire damage, ' + this.vars.splash + ' persistent fire damage, and ' + this.vars.splash + ' splash damage.',
+					'peepo',
+					'10-foot-diameter circle. You can spend 1 minute as an interact action to deactivate the pattern',
+				].join(' ')
+			),
+			
+			false ? new CardBodyAbility({
+				crit_success: 'The target is unaffected.',
+				success: 'The target is sickened 1.',
+				failure: 'The target is sickened 1 and slowed 1 while sickened.',
+				crit_failure: 'The target is blinded for 1 round, sickened 2, and slowed 1 while sickened.',
+			}) : new CardBodyText(),
+			true ? new CardBodyAbility({
+				// activate: 'Envision', activateAction: 'r',
+				// activate: 'Interact', activateAction: '1',
+				activate: 'Interact', activateAction: '1',
+
+				requirement: 'A gemstone of fitting type and size (see back)',
+				
+				effect: [
+					[
+						'You toss the disc onto the ground. and it expands into a',
+						'10-foot-diameter circle, You can spend 1 minute as an interact action to',
+						'deactivate the array. causing it to fold back into its disc form.',
+					].join(' ')
+				],
+			}) : new CardBodyText(),
+			new CardBodyText(
+			)
+		],
+		[
+			/*
 			new CardBodyAbility({
-				activate: 'Envision', activateAction: '1',
-				requirement: 'You are trained in Medicine',
-				effect: 'You regain 2d6 Hit Points, if you have the Battle Medicine feat, you instead gain 2d6+7 Hit Points',
+				heightened: [
+					new CardBodyAbilityHeightened('+1', 'The damage increases by 2d4.'),
+				],
 			}),
+			*/
 		],
 	)
 	
@@ -52,6 +154,7 @@ export class CanvasComponent implements OnInit {
 
 			titleFontSize: 90,
 			titleFontOffset: 70,
+			titlePunctureOffset: 50,
 			textContainerOffset: 90,
 			lineWidth: 5,
 
@@ -64,9 +167,12 @@ export class CanvasComponent implements OnInit {
 			bodyFontSize: 52,
 		},
 		colors: {
-			spell: '#5d0000',
-			item: '#00005d',
-			creature: '#005d00',
+			spell: '#5d0000', // red
+			item: '#00005d', // blue
+			recipe: '#5d005d', // purple
+			creature: '#005d00', // green
+			resource: '#5d5d5d', // grey
+
 			accent: '#dac68a',
 			traits: {
 				common: '#58180d',
@@ -140,6 +246,9 @@ export class CanvasComponent implements OnInit {
 		// draw content
 		offset = this.renderBody(ctx, offset);
 
+		// draw footer
+		this.renderFooter(ctx);
+
 		// draw frame
 		this.renderFrame(ctx);
 	}
@@ -196,7 +305,7 @@ export class CanvasComponent implements OnInit {
 		ctx.fillStyle = titleFontColor;
 		ctx.textAlign = titleTitleAlign;
 		ctx.textBaseline = titleFontBaseline;
-		ctx.fillText(this.data.name.toUpperCase(), this.config.size.textContainerOffset, this.config.size.titleFontOffset);
+		ctx.fillText(this.data.name.toUpperCase(), this.config.size.textContainerOffset + (this.data.puctureHole ? this.config.size.titlePunctureOffset : 0), this.config.size.titleFontOffset);
 
 		ctx.textAlign = titleTypeAlign;
 		ctx.fillText(this.data.type.toUpperCase(), this.config.size.width - this.config.size.textContainerOffset, this.config.size.titleFontOffset);
@@ -275,6 +384,7 @@ export class CanvasComponent implements OnInit {
 	private renderHeader(ctx: CanvasRenderingContext2D, offset: number) {
 		const headerFont = 'GoodPro';
 		const headerFontBold = 'GoodPro-Bold';
+		const headerFontAction = 'PF2-Action';
 		const headerFontColor = '#000';
 		const headerFontBaseline = 'top';
 		const headerFontAlign = 'left';
@@ -284,8 +394,11 @@ export class CanvasComponent implements OnInit {
 		ctx.textBaseline = headerFontBaseline;
 
 		this.data.header.forEach((header, index) => {
+			if(header.length === 0) return;
+
 			let horizontalOffset = this.config.size.textContainerOffset;
 			header.forEach((headerItem, index) => {
+				
 				// if its not the first item, add a ";" break
 				if (index > 0) {
 					ctx.font = `${this.config.size.bodyFontSize}px ${headerFont}`;
@@ -297,6 +410,13 @@ export class CanvasComponent implements OnInit {
 				ctx.font = `${this.config.size.bodyFontSize}px ${headerFontBold}`;
 				ctx.fillText(headerItem.name, horizontalOffset, offset);
 				horizontalOffset += ctx.measureText(headerItem.name).width + this.config.size.textMargin;
+
+				if(headerItem.action) {
+					// write action
+					ctx.font = `${this.config.size.bodyFontSize}px ${headerFontAction}`;
+					ctx.fillText(headerItem.action, horizontalOffset, offset);
+					horizontalOffset += ctx.measureText(headerItem.action).width + this.config.size.textMargin;
+				}
 
 				// write value
 				ctx.font = `${this.config.size.bodyFontSize}px ${headerFont}`;
@@ -324,7 +444,44 @@ export class CanvasComponent implements OnInit {
 		return offset;
 	}
 
-	private renderBodyFluff(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyFluff) {
+	private renderFooter(ctx: CanvasRenderingContext2D) {
+
+		// check if there is a footer
+		if(this.data.footer.length === 0) {
+			return;
+		}
+
+		// calculate total height of footer
+		let height: number = 0
+		this.data.footer.forEach((footerItem, index) => {
+			if (footerItem instanceof CardBodyFluff) {
+				height = this.renderBodyFluff(ctx, height, footerItem, false);
+			} else if (footerItem instanceof CardBodyText) {
+				height = this.renderBodyText(ctx, height, footerItem, false);
+			} else if (footerItem instanceof CardBodyAbility) {
+				height = this.renderBodyAbility(ctx, height, footerItem, false);
+			}
+		})
+
+		// Draw Line on top of footer
+		this.renderLine(ctx, this.config.size.height - height - this.config.size.titleFontOffset - this.config.size.textMargin);
+
+		// Draw footer
+		let offset: number = this.config.size.height - height - this.config.size.titleFontOffset + this.config.size.textMargin;
+		this.data.footer.forEach((footerItem, index) => {
+			if (footerItem instanceof CardBodyFluff) {
+				offset = this.renderBodyFluff(ctx, offset, footerItem);
+			} else if (footerItem instanceof CardBodyText) {
+				offset = this.renderBodyText(ctx, offset, footerItem);
+			} else if (footerItem instanceof CardBodyAbility) {
+				offset = this.renderBodyAbility(ctx, offset, footerItem);
+			}
+		})
+
+		return offset;
+	}
+
+	private renderBodyFluff(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyFluff, draw: boolean = true) {
 		const bodyFont = 'GoodPro-Italic';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
@@ -335,18 +492,23 @@ export class CanvasComponent implements OnInit {
 		ctx.textAlign = bodyFontAlign;
 		ctx.textBaseline = bodyFontBaseline;
 
-		offset = this.drawText(
-			ctx,
-			bodyItem.text,
-			offset,
-			0,
-			0,
-		)
+		bodyItem.text.forEach((text, index) => {
+			offset = this.drawText(
+				ctx,
+				text,
+				offset,
+				0,
+				0,
+				draw,
+			)
 
-		return offset + this.config.size.bodyFontSize;
+			offset += this.config.size.bodyFontSize;
+		})
+
+		return offset;
 	}
 
-	private renderBodyText(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyText) {
+	private renderBodyText(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyText, draw: boolean = true) {
 		const bodyFont = 'GoodPro';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
@@ -357,26 +519,27 @@ export class CanvasComponent implements OnInit {
 		ctx.textAlign = bodyFontAlign;
 		ctx.textBaseline = bodyFontBaseline;
 
-		offset = this.drawText(
-			ctx,
-			bodyItem.text,
-			offset,
-			0,
-			0,
-		)
+		bodyItem.text.forEach((text, index) => {
+			offset = this.drawText(
+				ctx,
+				text,
+				offset,
+				0,
+				0,
+				draw,
+			)
 
-		return offset + this.config.size.bodyFontSize;
+			offset += this.config.size.bodyFontSize;
+		})
+
+		return offset;
 	}
 
-	private renderBodyAbility(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyAbility) {
-		const bodyFont = 'GoodPro';
-		const bodyFontBold = 'GoodPro-Bold';
-		const bodyFontAction = 'PF2-Action';
+	private renderBodyAbility(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyAbility, draw: boolean = true) {
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
 		const bodyFontAlign = 'left';
 
-		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
 		ctx.fillStyle = bodyFontColor;
 		ctx.textAlign = bodyFontAlign;
 		ctx.textBaseline = bodyFontBaseline;
@@ -387,57 +550,98 @@ export class CanvasComponent implements OnInit {
 			'frequency',
 			'trigger',
 			'effect',
+
+			'crit_success',
+			'success',
+			'failure',
+			'crit_failure',
+			'heightened',
 		]
-		writingOrder.forEach((key, index) => {
+		writingOrder.forEach((key) => {
 			let value = bodyItem[key as keyof CardBodyAbility];
-			if(!value) {
-				return;
-			}
+			if(!value) { return; }
 
-			// if string array, join with ", " and suround with "()"
+			if(key === 'heightened' && Array.isArray(value)) {
+				value.forEach((heightened) => {
+					if(heightened instanceof CardBodyAbilityHeightened) {
+						offset = this.renderBodyAbilityLine(ctx, offset, `Heightened (${heightened.name})`, heightened.value, bodyItem, draw);
+					}
+				})
+				return offset + this.config.size.bodyFontSize;
+			}
+			
+			// if the value is an array, render it
 			if(Array.isArray(value)) {
-				value = `(${value.join(', ')})`;
+				//value = value.join(' ');
+				let isFirstLine = true;
+				value.forEach((valueItem, index) => {
+					if(typeof valueItem === 'string') {
+						if(isFirstLine) {
+							offset = this.renderBodyAbilityLine(ctx, offset, key, valueItem, bodyItem, draw);
+							isFirstLine = false;
+						} else {
+							offset = this.drawText( ctx, valueItem, offset, 60, 0, draw,
+							)
+						}
+
+						// if not the last line, add a line break
+						if(Array.isArray(value) && index < value.length - 1) {
+							offset += this.config.size.bodyFontSize;
+						}
+					}
+				})
 			}
 
-			let textOffset = 0;
-
-			// write key in bold
-			const keyValue = `${key[0].toUpperCase()}${key.slice(1)}`;
-			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontBold}`;
-			ctx.fillText(keyValue, this.config.size.textContainerOffset, offset);
-			textOffset += ctx.measureText(keyValue).width;
-
-			// write spacing
-			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-			ctx.fillText(" - ", this.config.size.textContainerOffset + textOffset, offset);
-			textOffset += ctx.measureText(" - ").width;
-
-			// if action, check if there is an action
-			if(key === 'activate' && bodyItem.activateAction) {
-				ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontAction}`;
-				ctx.fillText(bodyItem.activateAction, this.config.size.textContainerOffset + textOffset, offset);
-				textOffset += ctx.measureText(bodyItem.activateAction).width;
-
-				// write spacing
-				ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-				ctx.fillText(" ", this.config.size.textContainerOffset + textOffset, offset);
-				textOffset += ctx.measureText(" ").width;
+			// if the value is a string, render it
+			if(typeof value === 'string') {
+				offset = this.renderBodyAbilityLine(ctx, offset, key, value, bodyItem, draw);
 			}
 
-			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-			offset = this.drawText(
-				ctx,
-				value,
-				offset,
-				60,
-				60 - textOffset,
-			)
+			return offset + this.config.size.bodyFontSize;
 		})
 
 		return offset + this.config.size.bodyFontSize;
 	}
 
-	private drawText(ctx: CanvasRenderingContext2D, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0 ) {
+	private renderBodyAbilityLine(ctx: CanvasRenderingContext2D, offset: number, key: string, value: string, bodyItem: CardBodyAbility, draw: boolean = true) {
+		const bodyFont = 'GoodPro';
+		const bodyFontBold = 'GoodPro-Bold';
+		const bodyFontAction = 'PF2-Action';
+		let textOffset = 0;
+
+		// write exploded key in bold
+		const keyTexts = key.split('_');
+		keyTexts.forEach((keyText) => {
+			const keySingle = `${keyText[0].toUpperCase()}${keyText.slice(1)}`;
+			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontBold}`;
+			if(draw) { ctx.fillText(keySingle, this.config.size.textContainerOffset + textOffset, offset); }
+			textOffset += ctx.measureText(keySingle).width + ctx.measureText(' ').width;
+		})
+
+		// write spacing
+		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
+		if(draw) { ctx.fillText("- ", this.config.size.textContainerOffset + textOffset, offset); }
+		textOffset += ctx.measureText("- ").width;
+
+		// if action, check if there is an action
+		if(key === 'activate' && bodyItem.activateAction) {
+			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontAction}`;
+			if(draw) { ctx.fillText(bodyItem.activateAction, this.config.size.textContainerOffset + textOffset, offset); }
+			textOffset += ctx.measureText(bodyItem.activateAction).width;
+
+			// write spacing
+			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
+			if(draw) { ctx.fillText(" ", this.config.size.textContainerOffset + textOffset, offset); }
+			textOffset += ctx.measureText(" ").width;
+		}
+
+		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
+		offset = this.drawText( ctx, value, offset, 60, 60 - textOffset, draw, )
+
+		return offset;
+	}
+
+	private drawText(ctx: CanvasRenderingContext2D, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0, draw: boolean = true) {
 		const containerWidth = this.config.size.width - this.config.size.textContainerOffset * 2;
 		let paragraphs = text.split(/\r\n|\r|\n/);
 		paragraphs.forEach((paragraph, index) => {
@@ -456,7 +660,7 @@ export class CanvasComponent implements OnInit {
 				const wordLength = ctx.measureText(word).width;
 
 				if (wordLength + lineLength + (firstWordOfLine ? 0 : spaceWidth) > containerWidth - lineOffset() ) {
-					this.drawTextLineJustify(ctx, line, offset, this.config.size.textContainerOffset + lineOffset(), containerWidth - lineOffset());
+					if(draw) { this.drawTextLineJustify(ctx, line, offset, this.config.size.textContainerOffset + lineOffset(), containerWidth - lineOffset()); }
 
 					line = [];
 					lineLength = 0;
@@ -477,7 +681,7 @@ export class CanvasComponent implements OnInit {
 			})
 
 			// draw the last line, not justified
-			ctx.fillText(line.join(' '), this.config.size.textContainerOffset + lineOffset(), offset);
+			if(draw) { ctx.fillText(line.join(' '), this.config.size.textContainerOffset + lineOffset(), offset); }
 			offset += this.config.size.bodyFontSize;
 		})
 
