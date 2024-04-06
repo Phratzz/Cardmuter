@@ -1,5 +1,5 @@
 import { Component, ViewChild, OnInit, ElementRef } from '@angular/core';
-import { Card, CardBodyFluff, CardBodyText, CardBodyAbility, CardTrait, CardHeaderItem, CardBodyAbilityHeightened } from '../models/card.model';
+import { Card, CardBodyFluff, CardBodyText, CardBodyAbility, CardTrait, CardHeaderItem, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel } from '../models/card.model';
 import { RenderService } from '../services/render.service';
 
 @Component({
@@ -437,16 +437,40 @@ export class CanvasComponent implements OnInit {
 			'success',
 			'failure',
 			'crit_failure',
+
 			'heightened',
+			'staff',
 		]
 		writingOrder.forEach((key) => {
 			let value = bodyItem[key as keyof CardBodyAbility];
-			if(!value) { return; }
+			if(!value || (Array.isArray(value) && value.length === 0)) { return; }
 
 			if(key === 'heightened' && Array.isArray(value)) {
 				value.forEach((heightened) => {
 					if(heightened instanceof CardBodyAbilityHeightened) {
 						offset = this.renderBodyAbilityLine(ctx, offset, `Heightened (${heightened.name})`, heightened.value, bodyItem, draw);
+					}
+				})
+				return offset + this.config.size.bodyFontSize;
+			}
+
+			if(key === 'staff' && Array.isArray(value)) {
+				value.forEach((level) => {
+					if(level instanceof CardBodyAbilityStaffLevel) {
+						const spelltext = level.spells.reduce((text, spell) => {
+							if(text.length > 0) {
+								text += ', '
+							}
+
+							text += `${spell.name}`
+							if(spell.notes) {
+								text += ` (${spell.notes})`
+							}
+
+							return text
+						}, '')
+
+						offset = this.renderBodyAbilityLine(ctx, offset, level.name, spelltext, bodyItem, draw);
 					}
 				})
 				return offset + this.config.size.bodyFontSize;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
-import { Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyFluff, CardBodyText, CardTrait } from 'src/app/models/card.model';
+import { Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardBodyFluff, CardBodyText, CardTrait } from 'src/app/models/card.model';
 import { RenderService } from 'src/app/services/render.service';
 
 @Component({
@@ -25,6 +25,7 @@ export class SidebarComponent{
 				level: this.fb.control('1'),
 				punctureHole: this.fb.control(false),
 			}),
+			traitInput: this.fb.control(''),
 			traits: this.fb.control([
 				new CardTrait('Attack'),
 				new CardTrait('Cantrip'),
@@ -68,6 +69,33 @@ export class SidebarComponent{
 				]),
 			]),
 			body: this.fb.array([
+				this.fb.group({
+					type: this.fb.control('staff'),
+					levels: this.fb.array([
+						this.fb.group({
+							name: this.fb.control('Cantrip'),
+							spells: this.fb.array([
+								this.fb.group({
+									name: this.fb.control('Ray of Frost'),
+									notes: this.fb.control(''),
+								}),
+							]),
+						}),
+						this.fb.group({
+							name: this.fb.control('1st Level'),
+							spells: this.fb.array([
+								this.fb.group({
+									name: this.fb.control('Chilling Spray'),
+									notes: this.fb.control(''),
+								}),
+								this.fb.group({
+									name: this.fb.control('Snowball'),
+									notes: this.fb.control(''),
+								}),
+							]),
+						}),
+					]),
+				}),
 				this.fb.group({
 					type: this.fb.control('fluff'),
 					text: this.fb.control('You shape three needles out of a piece of metal in your possession and send them flying in a tight group toward one target.'),
@@ -309,7 +337,7 @@ export class SidebarComponent{
 	// Form Array
 	addFormArray(position: string, type: string) {
 		switch (type) {
-			case 'headerRow':
+			case 'header':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.array([
 						this.fb.group({
@@ -320,7 +348,7 @@ export class SidebarComponent{
 					])
 				)
 				break
-			case 'header':
+			case 'headerRow':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
 						name: this.fb.control(''),
@@ -328,6 +356,7 @@ export class SidebarComponent{
 						action: this.fb.control(''),
 					}))
 				break
+
 			case 'fluff':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
@@ -364,7 +393,8 @@ export class SidebarComponent{
 						crit_failure: this.fb.control(''),
 					}))
 				break;
-			case 'heightenedRow':
+
+			case 'heightened':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
 						type: this.fb.control('heightened'),
@@ -376,11 +406,48 @@ export class SidebarComponent{
 						])
 					}))
 				break;
-			case 'heightened':
+			case 'heightenedLine':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
 						cost: this.fb.control(''),
 						effect: this.fb.control(''),
+					}))
+				break;
+
+			case 'staff':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control(''),
+						levels: this.fb.array([
+							this.fb.group({
+								name: this.fb.control(''),
+								spells: this.fb.array([
+									this.fb.group({
+										name: this.fb.control(''),
+										notes: this.fb.control(''),
+									})
+								])
+							})
+						])
+					}))
+				break;
+			case 'staffLevel':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						name: this.fb.control(''),
+						spells: this.fb.array([
+							this.fb.group({
+								name: this.fb.control(''),
+								notes: this.fb.control(''),
+							})
+						])
+					}))
+				break;
+			case 'staffSpell':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						name: this.fb.control(''),
+						notes: this.fb.control(''),
 					}))
 				break;
 		}
@@ -411,7 +478,13 @@ export class SidebarComponent{
 					case 'save':
 						return new CardBodyAbility(item)
 					case 'heightened':
-						return new CardBodyAbilityHeightened(item.cost, item.effect)
+						return new CardBodyAbility({
+							heightened: item.lines.map((line: any) => new CardBodyAbilityHeightened(line.cost, line.effect))
+						})
+					case 'staff':
+						return new CardBodyAbility({
+							staff: item.levels.map((level: any) =>new CardBodyAbilityStaffLevel(level.name, level.spells.map((spell: any) => new CardBodyAbilityStaffSpell(spell.name, spell.notes))))
+						})
 					default:
 						return null
 				}

@@ -54,6 +54,19 @@ export class CardBodyAbilityHeightened {
     ) {}
 }
 
+export class CardBodyAbilityStaffLevel {
+    constructor(
+        public name: string,
+        public spells: CardBodyAbilityStaffSpell[],
+    ) {}
+}
+export class CardBodyAbilityStaffSpell {
+    constructor(
+        public name: string,
+        public notes: string,
+    ) {}
+}
+
 export class CardBodyFluff {
     text: string[];
 
@@ -87,6 +100,7 @@ export class CardBodyAbility {
     crit_success?: string;
     crit_failure?: string;
     heightened?: CardBodyAbilityHeightened[];
+    staff?: CardBodyAbilityStaffLevel[];
 
     constructor({
         activate = '',
@@ -101,6 +115,7 @@ export class CardBodyAbility {
         crit_success = '',
         crit_failure = '',
         heightened = <CardBodyAbilityHeightened[]>[],
+        staff = <CardBodyAbilityStaffLevel[]>[],
     }) {
         this.activate = activate;
         this.activateAction = activateAction;
@@ -114,5 +129,6 @@ export class CardBodyAbility {
         this.crit_success = crit_success;
         this.crit_failure = crit_failure;
         this.heightened = heightened;
+        this.staff = staff;
     }
 }
