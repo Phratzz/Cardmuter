@@ -10,6 +10,10 @@ import { Component, OnInit } from '@angular/core';
     
         grid-gap: var(--spacing);
 
+        &:not(:first-child) {
+            margin-top: var(--spacing);
+        }
+
         ::ng-deep > [fill] {
             &[fill="2"] { grid-column: span 2; }
             &[fill="3"] { grid-column: span 3; }

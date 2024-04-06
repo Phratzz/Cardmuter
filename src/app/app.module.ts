@@ -11,7 +11,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BlockRowComponent } from './building-blocks/block-row';
 import { BlockFlowComponent } from './building-blocks/block-flow';
-import { MatAutocomplete, MatSelectModule } from '@angular/material';
 
 @NgModule({
 	declarations: [
@@ -29,7 +28,6 @@ import { MatAutocomplete, MatSelectModule } from '@angular/material';
 		MaterialImportModule,
 		FormsModule,
 		ReactiveFormsModule,
-		MatSelectModule,
 	],
 	providers: [],
 	bootstrap: [AppComponent]

@@ -50,12 +50,8 @@ form {
 	mat-form-field {
 		width: 100%;
 
-		.mat-form-field-wrapper {
-			padding-bottom: 0px;
-		}
-		
-		.mat-form-field-infix {
-			width: auto;
+		.mat-mdc-form-field-subscript-wrapper {
+			display: none;
 		}
 
 		input:read-only {
@@ -63,12 +59,13 @@ form {
 		}
 	}
 
-	button {
-		margin-block: .25em !important;
-		padding-inline: 0 !important;
-	}
+    .mat-mdc-button-base {
+        height: 100%;
+        min-height: 40px;
+    }
 	
 	textarea {
+        min-height: 100px;
 		resize: none !important;
 	}
 }

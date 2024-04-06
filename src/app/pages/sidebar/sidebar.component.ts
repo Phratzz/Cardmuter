@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { MatSelectChange } from '@angular/material';
 import { Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardBodyFluff, CardBodyText, CardTrait } from 'src/app/models/card.model';
 import { RenderService } from 'src/app/services/render.service';
 
@@ -321,7 +320,7 @@ export class SidebarComponent{
 	]
 
 	// Traits
-	onAddTrait(event: MatSelectChange) {
+	onAddTrait(event: any) {
 		const currentTraits = this.cardForm.get('traits')?.value
 		const selectedTraits = [...this.cardForm.get('traits')?.value, event.value]
 		const sortedTraits = this.traits.map((trait) => trait.traits).flat().filter((trait) => selectedTraits.some((selectedTrait: CardTrait) => selectedTrait.name === trait.name))
@@ -417,7 +416,7 @@ export class SidebarComponent{
 			case 'staff':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
-						type: this.fb.control(''),
+						type: this.fb.control('staff'),
 						levels: this.fb.array([
 							this.fb.group({
 								name: this.fb.control(''),

@@ -58,28 +58,30 @@
 			<block-flow>
 				<ng-container formArrayName="header" *ngFor="let row of getFormArray('header')?.controls; let i = index">
 					<mat-card>
-						<ng-container [formArrayName]="i" *ngFor="let row of getFormArray('header.'+i)?.controls; let ii = index">
-							<block-row [formGroupName]="ii">
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Name</mat-label>
-									<input type="text" formControlName="name" matInput>
-								</mat-form-field>
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Value</mat-label>
-									<input type="text" formControlName="value" matInput>
-								</mat-form-field>
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Action</mat-label>
-									<input type="text" formControlName="action" matInput>
-								</mat-form-field>
-								<button type="button" mat-stroked-button (click)="removeFormArray('header.'+i, ii)">Remove</button>
-							</block-row>
-						</ng-container>
+						<mat-card-content>
+							<ng-container [formArrayName]="i" *ngFor="let row of getFormArray('header.'+i)?.controls; let ii = index">
+								<block-row [formGroupName]="ii">
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Name</mat-label>
+										<input type="text" formControlName="name" matInput>
+									</mat-form-field>
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Value</mat-label>
+										<input type="text" formControlName="value" matInput>
+									</mat-form-field>
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Action</mat-label>
+										<input type="text" formControlName="action" matInput>
+									</mat-form-field>
+									<button type="button" mat-stroked-button (click)="removeFormArray('header.'+i, ii)">Remove</button>
+								</block-row>
+							</ng-container>
 
-						<block-row>
-							<button type="button" (click)="addFormArray('header.'+i, 'headerRow')" mat-stroked-button>Add new line</button>
-							<button type="button" (click)="removeFormArray('header', i)" mat-stroked-button>Remove Row</button>
-						</block-row>
+							<block-row>
+								<button type="button" (click)="addFormArray('header.'+i, 'headerRow')" mat-stroked-button>Add new line</button>
+								<button type="button" (click)="removeFormArray('header', i)" mat-stroked-button>Remove Row</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 				</ng-container>
 
@@ -110,12 +112,12 @@
 						</mat-select>
 					</mat-form-field>
 				</block-row>
-				<mat-chip-list>
+				<mat-chip-set>
 					<mat-chip *ngFor="let trait of cardForm.get('traits')?.value" (removed)="onRemoveTrait(trait)" [ngStyle]="{'background-color': trait.getColor()}">
 						{{trait.name|titlecase}}
 						<mat-icon matChipRemove >cancel</mat-icon>
 					</mat-chip>
-				</mat-chip-list>
+				</mat-chip-set>
 			</block-flow>
 		</mat-card-content>
 	</mat-card>
@@ -126,22 +128,24 @@
 		</mat-card-header>
 		<mat-card-content>
 			<block-flow>
-				<div formArrayName="body" *ngFor="let row of getFormArray('body')?.controls; let i = index">
+				<ng-container formArrayName="body" *ngFor="let row of getFormArray('body')?.controls; let i = index">
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'fluff'">
 						<mat-card-header>
 							<mat-card-title>Fluff / Description</mat-card-title>
 						</mat-card-header>
 						
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Fluff</mat-label>
-								<textarea type="text" formControlName="text" matInput></textarea>
-							</mat-form-field>
-						</block-row>
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Fluff</mat-label>
+									<textarea type="text" formControlName="text" matInput></textarea>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Fluff</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Fluff</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'text'">
@@ -149,16 +153,18 @@
 							<mat-card-title>Text</mat-card-title>
 						</mat-card-header>
 						
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Text</mat-label>
-								<textarea type="text" formControlName="text" matInput></textarea>
-							</mat-form-field>
-						</block-row>
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Text</mat-label>
+									<textarea type="text" formControlName="text" matInput></textarea>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Text</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Text</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'ability'">
@@ -166,48 +172,50 @@
 							<mat-card-title>Item Ability</mat-card-title>
 						</mat-card-header>
 						
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Activate</mat-label>
-								<input type="text" formControlName="activate" matInput>
-							</mat-form-field>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Action</mat-label>
-								<input type="text" formControlName="activateAction" matInput>
-							</mat-form-field>
-						</block-row>
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Activate</mat-label>
+									<input type="text" formControlName="activate" matInput>
+								</mat-form-field>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Action</mat-label>
+									<input type="text" formControlName="activateAction" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Trigger</mat-label>
-								<input type="text" formControlName="trigger" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Trigger</mat-label>
+									<input type="text" formControlName="trigger" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Requirement</mat-label>
-								<input type="text" formControlName="requirement" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Requirement</mat-label>
+									<input type="text" formControlName="requirement" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Frequency</mat-label>
-								<input type="text" formControlName="frequency" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Frequency</mat-label>
+									<input type="text" formControlName="frequency" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Effect</mat-label>
-								<textarea type="text" formControlName="effect" matInput></textarea>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Effect</mat-label>
+									<textarea type="text" formControlName="effect" matInput></textarea>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Ability</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Ability</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'save'">
@@ -215,37 +223,39 @@
 							<mat-card-title>Save Effect</mat-card-title>
 						</mat-card-header>
 						
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Success</mat-label>
-								<input type="text" formControlName="success" matInput>
-							</mat-form-field>
-						</block-row>
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Success</mat-label>
+									<input type="text" formControlName="success" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Critical Success</mat-label>
-								<input type="text" formControlName="crit_success" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Critical Success</mat-label>
+									<input type="text" formControlName="crit_success" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Failure</mat-label>
-								<input type="text" formControlName="failure" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Failure</mat-label>
+									<input type="text" formControlName="failure" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Critical Failure</mat-label>
-								<input type="text" formControlName="crit_failure" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Critical Failure</mat-label>
+									<input type="text" formControlName="crit_failure" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Save</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Save</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'heightened'">
@@ -253,24 +263,26 @@
 							<mat-card-title>Heighten Effect</mat-card-title>
 						</mat-card-header>
 						
-						<ng-container formGroupName="lines" *ngFor="let row of getFormArray('body.'+i+'.lines')?.controls; let ii = index">
-							<block-row [formGroupName]="ii">
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Effect</mat-label>
-									<input type="text" formControlName="effect" matInput>
-								</mat-form-field>
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Cost</mat-label>
-									<input type="text" formControlName="cost" matInput>
-								</mat-form-field>
-								<button type="button" mat-stroked-button (click)="removeFormArray('body.'+i+'.lines', ii)">Remove line</button>
-							</block-row>
-						</ng-container>
+						<mat-card-content>
+							<ng-container formGroupName="lines" *ngFor="let row of getFormArray('body.'+i+'.lines')?.controls; let ii = index">
+								<block-row [formGroupName]="ii">
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Effect</mat-label>
+										<input type="text" formControlName="effect" matInput>
+									</mat-form-field>
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Cost</mat-label>
+										<input type="text" formControlName="cost" matInput>
+									</mat-form-field>
+									<button type="button" mat-stroked-button (click)="removeFormArray('body.'+i+'.lines', ii)">Remove line</button>
+								</block-row>
+							</ng-container>
 
-						<block-row>
-							<button type="button" (click)="addFormArray('body.'+i+'.lines', 'heightenedLine')" mat-stroked-button>Add new line</button>
-							<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Heighten</button>
-						</block-row>
+							<block-row>
+								<button type="button" (click)="addFormArray('body.'+i+'.lines', 'heightenedLine')" mat-stroked-button>Add new line</button>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Heighten</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'staff'">
@@ -278,41 +290,45 @@
 							<mat-card-title>Staff</mat-card-title>
 						</mat-card-header>
 						
-						<block-flow>
-							<mat-card formGroupName="levels" *ngFor="let row of getFormArray('body.'+i+'.levels')?.controls; let ii = index">
-								<block-row [formGroupName]="ii">
-									<mat-form-field appearance="outline" floatLabel="always" color="accent">
-										<mat-label>Level</mat-label>
-										<input type="text" formControlName="name" matInput>
-									</mat-form-field>
-									<button type="button" mat-stroked-button (click)="removeFormArray('body.'+i+'.levels', ii)">Remove Level</button>
-									<button type="button" mat-stroked-button (click)="addFormArray('body.'+i+'.levels.'+ii+'.spells', 'staffSpell')">Add spell</button>
-								</block-row>
-	
-								<ng-container [formGroupName]="ii">
-									<ng-container formArrayName="spells" *ngFor="let row of getFormArray('body.'+i+'.levels.'+ii+'.spells')?.controls; let iii = index">
-										<block-row [formGroupName]="iii">
+						<mat-card-content>
+							<block-flow>
+								<mat-card formGroupName="levels" *ngFor="let row of getFormArray('body.'+i+'.levels')?.controls; let ii = index">
+									<mat-card-content>
+										<block-row [formGroupName]="ii">
 											<mat-form-field appearance="outline" floatLabel="always" color="accent">
-												<mat-label>Name</mat-label>
+												<mat-label>Level</mat-label>
 												<input type="text" formControlName="name" matInput>
 											</mat-form-field>
-											<mat-form-field appearance="outline" floatLabel="always" color="accent">
-												<mat-label>Notes</mat-label>
-												<input type="text" formControlName="notes" matInput>
-											</mat-form-field>
-											<button type="button" mat-stroked-button (click)="removeFormArray('body.'+i+'.levels.'+ii+'.spells', iii)">Remove spell</button>
+											<button type="button" mat-stroked-button (click)="removeFormArray('body.'+i+'.levels', ii)">Remove Level</button>
+											<button type="button" mat-stroked-button (click)="addFormArray('body.'+i+'.levels.'+ii+'.spells', 'staffSpell')">Add spell</button>
 										</block-row>
-									</ng-container>
-								</ng-container>
-							</mat-card>
+			
+										<ng-container [formGroupName]="ii">
+											<ng-container formArrayName="spells" *ngFor="let row of getFormArray('body.'+i+'.levels.'+ii+'.spells')?.controls; let iii = index">
+												<block-row [formGroupName]="iii">
+													<mat-form-field appearance="outline" floatLabel="always" color="accent">
+														<mat-label>Name</mat-label>
+														<input type="text" formControlName="name" matInput>
+													</mat-form-field>
+													<mat-form-field appearance="outline" floatLabel="always" color="accent">
+														<mat-label>Notes</mat-label>
+														<input type="text" formControlName="notes" matInput>
+													</mat-form-field>
+													<button type="button" mat-stroked-button (click)="removeFormArray('body.'+i+'.levels.'+ii+'.spells', iii)">Remove spell</button>
+												</block-row>
+											</ng-container>
+										</ng-container>
+									</mat-card-content>
+								</mat-card>
 
-							<block-row>
-								<button type="button" (click)="addFormArray('body.'+i+'.levels', 'staffLevel')" mat-stroked-button>Add new level</button>
-								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Staff</button>
-							</block-row>
-						</block-flow>
+								<block-row>
+									<button type="button" (click)="addFormArray('body.'+i+'.levels', 'staffLevel')" mat-stroked-button>Add new level</button>
+									<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Staff</button>
+								</block-row>
+							</block-flow>
+						</mat-card-content>
 					</mat-card>
-				</div>
+				</ng-container>
 				
 				<block-row>
 					<button type="button" (click)="addFormArray('body', 'fluff')" mat-stroked-button>Fluff</button>
@@ -334,122 +350,203 @@
 			<block-flow>
 				<ng-container formArrayName="footer" *ngFor="let row of getFormArray('footer')?.controls; let i = index">
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'fluff'">
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Fluff</mat-label>
-								<textarea type="text" formControlName="text" matInput></textarea>
-							</mat-form-field>
-						</block-row>
+						<mat-card-header>
+							<mat-card-title>Fluff / Description</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Fluff</mat-label>
+									<textarea type="text" formControlName="text" matInput></textarea>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Fluff</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Fluff</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'text'">
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Text</mat-label>
-								<textarea type="text" formControlName="text" matInput></textarea>
-							</mat-form-field>
-						</block-row>
+						<mat-card-header>
+							<mat-card-title>Text</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Text</mat-label>
+									<textarea type="text" formControlName="text" matInput></textarea>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Text</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Text</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'ability'">
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Activate</mat-label>
-								<input type="text" formControlName="activate" matInput>
-							</mat-form-field>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Action</mat-label>
-								<input type="text" formControlName="activateAction" matInput>
-							</mat-form-field>
-						</block-row>
+						<mat-card-header>
+							<mat-card-title>Item Ability</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Activate</mat-label>
+									<input type="text" formControlName="activate" matInput>
+								</mat-form-field>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Action</mat-label>
+									<input type="text" formControlName="activateAction" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Requirement</mat-label>
-								<input type="text" formControlName="requirement" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Trigger</mat-label>
+									<input type="text" formControlName="trigger" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Frequency</mat-label>
-								<input type="text" formControlName="frequency" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Requirement</mat-label>
+									<input type="text" formControlName="requirement" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Effect</mat-label>
-								<textarea type="text" formControlName="effect" matInput></textarea>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Frequency</mat-label>
+									<input type="text" formControlName="frequency" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove ability</button>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Effect</mat-label>
+									<textarea type="text" formControlName="effect" matInput></textarea>
+								</mat-form-field>
+							</block-row>
+
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Ability</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'save'">
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Success</mat-label>
-								<input type="text" formControlName="success" matInput>
-							</mat-form-field>
-						</block-row>
+						<mat-card-header>
+							<mat-card-title>Save Effect</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Success</mat-label>
+									<input type="text" formControlName="success" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Critical Success</mat-label>
-								<input type="text" formControlName="crit_success" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Critical Success</mat-label>
+									<input type="text" formControlName="crit_success" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Failure</mat-label>
-								<input type="text" formControlName="failure" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Failure</mat-label>
+									<input type="text" formControlName="failure" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<mat-form-field appearance="outline" floatLabel="always" color="accent">
-								<mat-label>Critical Failure</mat-label>
-								<input type="text" formControlName="crit_failure" matInput>
-							</mat-form-field>
-						</block-row>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Critical Failure</mat-label>
+									<input type="text" formControlName="crit_failure" matInput>
+								</mat-form-field>
+							</block-row>
 
-						<block-row>
-							<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Save</button>
-						</block-row>
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Save</button>
+							</block-row>
+						</mat-card-content>
 					</mat-card>
 
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'heightened'">
-						<ng-container formGroupName="lines" *ngFor="let row of getFormArray('footer.'+i+'.lines')?.controls; let ii = index">
-							<block-row [formGroupName]="ii">
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Effect</mat-label>
-									<input type="text" formControlName="effect" matInput>
-								</mat-form-field>
-								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Cost</mat-label>
-									<input type="text" formControlName="cost" matInput>
-								</mat-form-field>
-								<button type="button" mat-stroked-button (click)="removeFormArray('footer.'+i+'.lines', ii)">Remove</button>
-							</block-row>
-						</ng-container>
+						<mat-card-header>
+							<mat-card-title>Heighten Effect</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<ng-container formGroupName="lines" *ngFor="let row of getFormArray('footer.'+i+'.lines')?.controls; let ii = index">
+								<block-row [formGroupName]="ii">
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Effect</mat-label>
+										<input type="text" formControlName="effect" matInput>
+									</mat-form-field>
+									<mat-form-field appearance="outline" floatLabel="always" color="accent">
+										<mat-label>Cost</mat-label>
+										<input type="text" formControlName="cost" matInput>
+									</mat-form-field>
+									<button type="button" mat-stroked-button (click)="removeFormArray('footer.'+i+'.lines', ii)">Remove line</button>
+								</block-row>
+							</ng-container>
 
-						<block-row>
-							<button type="button" (click)="addFormArray('footer.'+i+'.lines', 'heightened')" mat-stroked-button>Add new line</button>
-							<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Heighten</button>
-						</block-row>
+							<block-row>
+								<button type="button" (click)="addFormArray('footer.'+i+'.lines', 'heightenedLine')" mat-stroked-button>Add new line</button>
+								<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Heighten</button>
+							</block-row>
+						</mat-card-content>
+					</mat-card>
+
+					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'staff'">
+						<mat-card-header>
+							<mat-card-title>Staff</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-flow>
+								<mat-card formGroupName="levels" *ngFor="let row of getFormArray('footer.'+i+'.levels')?.controls; let ii = index">
+									<mat-card-content>
+										<block-row [formGroupName]="ii">
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Level</mat-label>
+												<input type="text" formControlName="name" matInput>
+											</mat-form-field>
+											<button type="button" mat-stroked-button (click)="removeFormArray('footer.'+i+'.levels', ii)">Remove Level</button>
+											<button type="button" mat-stroked-button (click)="addFormArray('footer.'+i+'.levels.'+ii+'.spells', 'staffSpell')">Add spell</button>
+										</block-row>
+			
+										<ng-container [formGroupName]="ii">
+											<ng-container formArrayName="spells" *ngFor="let row of getFormArray('footer.'+i+'.levels.'+ii+'.spells')?.controls; let iii = index">
+												<block-row [formGroupName]="iii">
+													<mat-form-field appearance="outline" floatLabel="always" color="accent">
+														<mat-label>Name</mat-label>
+														<input type="text" formControlName="name" matInput>
+													</mat-form-field>
+													<mat-form-field appearance="outline" floatLabel="always" color="accent">
+														<mat-label>Notes</mat-label>
+														<input type="text" formControlName="notes" matInput>
+													</mat-form-field>
+													<button type="button" mat-stroked-button (click)="removeFormArray('footer.'+i+'.levels.'+ii+'.spells', iii)">Remove spell</button>
+												</block-row>
+											</ng-container>
+										</ng-container>
+									</mat-card-content>
+								</mat-card>
+
+								<block-row>
+									<button type="button" (click)="addFormArray('footer.'+i+'.levels', 'staffLevel')" mat-stroked-button>Add new level</button>
+									<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Staff</button>
+								</block-row>
+							</block-flow>
+						</mat-card-content>
 					</mat-card>
 				</ng-container>
 
@@ -458,7 +555,8 @@
 					<button type="button" (click)="addFormArray('footer', 'text')" mat-stroked-button>Text</button>
 					<button type="button" (click)="addFormArray('footer', 'ability')" mat-stroked-button>Ability</button>
 					<button type="button" (click)="addFormArray('footer', 'save')" mat-stroked-button>Save</button>
-					<button type="button" (click)="addFormArray('footer', 'heightenedRow')" mat-stroked-button>Heighten</button>
+					<button type="button" (click)="addFormArray('footer', 'heightened')" mat-stroked-button>Heighten</button>
+					<button type="button" (click)="addFormArray('footer', 'staff')" mat-stroked-button>Staff</button>
 				</block-row>
 			</block-flow>
 		</mat-card-content>
