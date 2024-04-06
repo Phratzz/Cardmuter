@@ -21,6 +21,7 @@ export class SidebarComponent{
 			base: this.fb.group({
 				name: this.fb.control('Needle Darts'),
 				type: this.fb.control('cantrip'),
+				color: this.fb.control('red'),
 				level: this.fb.control('1'),
 				punctureHole: this.fb.control(false),
 			}),
@@ -291,28 +292,6 @@ export class SidebarComponent{
 		}
 	]
 
-	private getFrameFromType(type: string): ('item' | 'spell' | 'creature' | 'resource' | 'recipe') {
-		switch (type) {
-			case 'cantrip':
-			case 'spell':
-				return 'spell'
-
-			case 'creature':
-				return 'creature'
-
-			case 'item':
-				return 'item'
-
-			case 'resource':
-				return 'resource'
-
-			case 'recipe':
-				return 'recipe'
-		}
-
-		return 'item'
-	}
-
 	// Traits
 	onAddTrait(event: MatSelectChange) {
 		const currentTraits = this.cardForm.get('traits')?.value
@@ -369,6 +348,7 @@ export class SidebarComponent{
 						type: this.fb.control('ability'),
 						activate: this.fb.control(''),
 						activateAction: this.fb.control(''),
+						trigger: this.fb.control(''),
 						requirement: this.fb.control(''),
 						frequency: this.fb.control(''),
 						effect: this.fb.control(''),
@@ -415,7 +395,7 @@ export class SidebarComponent{
 
 	onFormSubmit() {
 		const newCard = new Card(
-			this.getFrameFromType(this.cardForm.get('base')?.get('type')?.value),
+			this.cardForm.get('base')?.get('color')?.value,
 			this.cardForm.get('base')?.get('name')?.value,
 			this.cardForm.get('base')?.get('punctureHole')?.value,
 			this.cardForm.get('base')?.get('type')?.value + ' ' + this.cardForm.get('base')?.get('level')?.value,
@@ -456,5 +436,73 @@ export class SidebarComponent{
 		);
 
 		this.renderService.newCard(newCard);
+	}
+
+	onExport() {
+		// save to file
+		const data = JSON.stringify(this.cardForm.value, null, 4)
+		const blob = new Blob([data], { type: 'text/plain' })
+		const url = window.URL.createObjectURL(blob)
+		let fileName = this.cardForm.get('base')?.get('name')?.value.replace(/\s/g, '-') + '.json'
+
+		const a = document.createElement('a')
+		a.href = url
+		a.download = fileName
+		a.click()
+
+		console.info('Exported:', fileName, this.cardForm.value)
+		window.URL.revokeObjectURL(url)
+	}
+	onImport() {
+		// load from file
+		const input = document.createElement('input')
+		input.type = 'file'
+		input.accept = '.json'
+		input.onchange = (e) => {
+			const file:any = (<HTMLInputElement>e.target).files?.[0]
+			const reader = new FileReader()
+
+			reader.onload = (e) => {
+				const data = JSON.parse(<string>reader.result)
+				console.info('Imported:', file.name, data)
+
+				// convert data.traits to CardTrait[]
+				data.traits = data.traits.map((trait: any) => new CardTrait(trait.name, trait.type))
+
+				// reset and remove form controls
+				this.cardForm.reset()
+				this.getFormArray('header').clear()
+				this.getFormArray('body').clear()
+				this.getFormArray('footer').clear()
+
+				// add form controls
+				data.header.forEach(() => this.addFormArray('header', 'headerRow'))
+				data.body.forEach((line: any) => {
+					if (line.type === 'fluff') {
+						this.addFormArray('body', 'fluff')
+					} else if (line.type === 'text') {
+						this.addFormArray('body', 'text')
+					} else if (line.type === 'ability' || line.type === 'save') {
+						this.addFormArray('body', 'ability')
+					}
+				})
+				data.footer.forEach((line: any) => {
+					if (line.type === 'fluff') {
+						this.addFormArray('footer', 'fluff')
+					} else if (line.type === 'text') {
+						this.addFormArray('footer', 'text')
+					} else if (line.type === 'ability' || line.type === 'save') {
+						this.addFormArray('footer', 'ability')
+					}
+				})
+
+				this.cardForm.patchValue(data)
+				this.onFormSubmit()
+			}
+
+			reader.readAsText(file)
+		}
+
+		input.click()
 	}
 }

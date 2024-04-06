@@ -1,45 +1,21 @@
 export class Card {
-    frame: 'item' | 'spell' | 'creature' | 'resource' | 'recipe';
-    name: string;
-    puctureHole: boolean;
-    type: string;
-    traits: CardTrait[];
-    header: CardHeaderItem[][];
-    body: (CardBodyFluff | CardBodyText | CardBodyAbility)[];
-    footer: (CardBodyFluff | CardBodyText | CardBodyAbility)[];
-
     constructor(
-        frame: ('item' | 'spell' | 'creature' | 'resource' | 'recipe') = 'item',
-        name: string = '',
-        puctureHole: boolean = false,
-        type: string = '',
-        traits: CardTrait[] = [],
-        header: CardHeaderItem[][] = [],
-        body: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
-        footer: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
-    ) {
-        this.frame = frame;
-        this.name = name;
-        this.puctureHole = puctureHole;
-        this.type = type;
-        this.traits = traits;
-        this.header = header;
-        this.body = body;
-        this.footer = footer;
-    }
+        public color: ('red' | 'blue' | 'green' | 'yellow' | 'purple' | 'cyan' | 'grey') = 'red',
+        public name: string = '',
+        public puctureHole: boolean = false,
+        public type: string = '',
+        public traits: CardTrait[] = [],
+        public header: CardHeaderItem[][] = [],
+        public body: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
+        public footer: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
+    ) {}
 }
 
 export class CardTrait {
-    name: string;
-    type: 'common' | 'uncommon' | 'rare' | 'unique' | 'size' | 'alignment' | 'weapon';
-
     constructor(
-        name: string,
-        type: 'common' | 'uncommon' | 'rare' | 'unique' | 'size' | 'alignment' | 'weapon' = 'common'
-    ) {
-        this.name = name;
-        this.type = type;
-    }
+        public name: string,
+        public type: 'common' | 'uncommon' | 'rare' | 'unique' | 'size' | 'alignment' | 'weapon' = 'common'
+    ) {}
 
     public getColor(): string {
         switch (this.type) {
@@ -64,32 +40,18 @@ export class CardTrait {
 }
 
 export class CardHeaderItem {
-    name: string;
-    value: string;
-    action: string;
-
     constructor(
-        name: string,
-        value: string,
-        action: string = '',
-    ) {
-        this.name = name;
-        this.value = value;
-        this.action = action;
-    }
+        public name: string,
+        public value: string,
+        public action: string = '',
+    ) {}
 }
 
 export class CardBodyAbilityHeightened {
-    name: string;
-    value: string;
-
     constructor(
-        name: string,
-        value: string,
-    ) {
-        this.name = name;
-        this.value = value;
-    }
+        public name: string,
+        public value: string,
+    ) {}
 }
 
 export class CardBodyFluff {

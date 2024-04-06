@@ -21,6 +21,19 @@
 					</mat-form-field>
 				
 					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
+						<mat-label>Color</mat-label>
+						<mat-select formControlName="color">
+							<mat-option value="red">Red</mat-option>
+							<mat-option value="blue">Blue</mat-option>
+							<mat-option value="green">Green</mat-option>
+							<mat-option value="yellow">Yellow</mat-option>
+							<mat-option value="purple">Purple</mat-option>
+							<mat-option value="cyan">Cyan</mat-option>
+							<mat-option value="grey">Grey</mat-option>
+						</mat-select>
+					</mat-form-field>
+				
+					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
 						<mat-label>Level</mat-label>
 						<input formControlName="level" matInput>
 					</mat-form-field>
@@ -149,6 +162,13 @@
 							<mat-form-field appearance="outline" floatLabel="always" color="accent">
 								<mat-label>Action</mat-label>
 								<input type="text" formControlName="activateAction" matInput>
+							</mat-form-field>
+						</block-row>
+
+						<block-row>
+							<mat-form-field appearance="outline" floatLabel="always" color="accent">
+								<mat-label>Trigger</mat-label>
+								<input type="text" formControlName="trigger" matInput>
 							</mat-form-field>
 						</block-row>
 
@@ -383,5 +403,9 @@
 		</mat-card-content>
 	</mat-card>
 
-	<button value="save" mat-stroked-button>Update Card</button>
+	<block-row>
+		<button value="save" mat-stroked-button>Update Card</button>
+		<button type="button" mat-stroked-button (click)="onExport()">Export</button>
+		<button type="button" mat-stroked-button (click)="onImport()">Import</button>
+	</block-row>
 </form>

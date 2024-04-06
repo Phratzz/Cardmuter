@@ -6,4 +6,11 @@
 
     grid-template-columns: 800px 1fr;
     //grid-template-columns: 0fr 1fr;
+
+    // if desktop is less than 1200px
+    @media (max-width: 1200px) {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        grid-template-rows: 2fr 1fr;
+    }
 }

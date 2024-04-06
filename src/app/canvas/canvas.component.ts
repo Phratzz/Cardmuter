@@ -43,13 +43,17 @@ export class CanvasComponent implements OnInit {
 			bodyFontSize: 52,
 		},
 		colors: {
-			spell: '#5d0000', // red
-			item: '#00005d', // blue
-			recipe: '#5d005d', // purple
-			creature: '#005d00', // green
-			resource: '#5d5d5d', // grey
+			red: '#5d0000', // spell
+			blue: '#00005d', // item
+			green: '#005d00', //
 
-			accent: '#dac68a',
+			purple: '#5d005d', // formula
+			yellow: '#5d5d00', //
+			cyan: '#005d5d', // 
+			
+			grey: '#5d5d5d', // resource
+
+			accent: '#dac68a', //
 		},
 	};
 
@@ -163,7 +167,7 @@ export class CanvasComponent implements OnInit {
 
 
 			// draw frame color
-			ctx.fillStyle = this.config.colors[this.data.frame];
+			ctx.fillStyle = this.config.colors[this.data.color];
 			ctx.fillRect(0, 0, this.canvas.nativeElement.width, this.canvas.nativeElement.height);
 
 			// reset globalCompositeOperation
@@ -424,9 +428,9 @@ export class CanvasComponent implements OnInit {
 
 		const writingOrder = [
 			'activate',
+			'trigger',
 			'requirement',
 			'frequency',
-			'trigger',
 			'effect',
 
 			'crit_success',
