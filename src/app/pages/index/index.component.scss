@@ -13,4 +13,18 @@
         gap: 20px;
         grid-template-rows: 2fr 1fr;
     }
+
+    #sidebar {
+        margin: 20px;
+
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        ::ng-deep {
+            router-outlet {
+                display: none;
+            }
+        }
+    }
 }

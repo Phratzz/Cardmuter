@@ -1,4 +1,4 @@
-export class Card {
+export class PF2Card {
     constructor(
         public color: ('red' | 'blue' | 'green' | 'yellow' | 'purple' | 'cyan' | 'grey') = 'red',
         public name: string = '',
@@ -6,8 +6,8 @@ export class Card {
         public type: string = '',
         public traits: CardTrait[] = [],
         public header: CardHeaderItem[][] = [],
-        public body: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
-        public footer: (CardBodyFluff | CardBodyText | CardBodyAbility)[] = [],
+        public body: any[] = [],
+        public footer: any[] = [],
     ) {}
 }
 
@@ -65,26 +65,6 @@ export class CardBodyAbilityStaffSpell {
         public name: string,
         public notes: string,
     ) {}
-}
-
-export class CardBodyFluff {
-    text: string[];
-
-    constructor(
-        ...text: string[]
-    ) {
-        this.text = text;
-    }
-}
-
-export class CardBodyText {
-    text: string[];
-
-    constructor(
-        ...text: string[]
-    ) {
-        this.text = text;
-    }
 }
 
 export class CardBodyAbility {

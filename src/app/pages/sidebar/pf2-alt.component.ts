@@ -1,129 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardBodyFluff, CardBodyText, CardTrait } from 'src/app/models/card.model';
+import { Component } from '@angular/core';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
+import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait, CardBodyTitle } from 'src/app/models/pf2-alt.card.model';
 import { RenderService } from 'src/app/services/render.service';
+import { SidebarBase } from './base';
+import { CardBodyText } from 'src/app/traits/text.trait';
+import { CardBodyFluff } from 'src/app/traits/fluff.trait';
 
 @Component({
-	selector: 'app-sidebar',
-	templateUrl: './sidebar.component.html',
-	styleUrls: ['./sidebar.component.scss']
+	selector: 'app-sidebar-pf2-alt',
+	templateUrl: './pf2-alt.component.html',
+	styleUrls: ['./base.scss']
 })
-export class SidebarComponent{
-
-	public cardForm: FormGroup
+export class PF2AltSidebarComponent extends SidebarBase{
+	currentSampleControl = new FormControl('item')
 
 	constructor(
 		private fb: FormBuilder,
 		private renderService: RenderService,
 	) {
-		this.cardForm = this.fb.group({
-			base: this.fb.group({
-				name: this.fb.control('Needle Darts'),
-				type: this.fb.control('cantrip'),
-				color: this.fb.control('red'),
-				level: this.fb.control('1'),
-				punctureHole: this.fb.control(false),
-			}),
-			traitInput: this.fb.control(''),
-			traits: this.fb.control([
-				new CardTrait('Attack'),
-				new CardTrait('Cantrip'),
-				new CardTrait('Concentrate'),
-				new CardTrait('Manipulate'),
-				new CardTrait('Metal'),
-			]),
-			header: this.fb.array([
-				this.fb.array([
-					this.fb.group({
-						name: this.fb.control('Traditions'),
-						value: this.fb.control('Arcane, Divine, Occult, Primal'),
-						action: this.fb.control(''),
-					}),
-				]),
-				this.fb.array([
-					this.fb.group({
-						name: this.fb.control('Cast'),
-						value: this.fb.control(''),
-						action: this.fb.control('2'),
-					}),
-				]),
-				this.fb.array([
-					this.fb.group({
-						name: this.fb.control('Range'),
-						value: this.fb.control('60 feet'),
-						action: this.fb.control(''),
-					}),
-					this.fb.group({
-						name: this.fb.control('Targets'),
-						value: this.fb.control('1 creature'),
-						action: this.fb.control(''),
-					}),
-				]),
-				this.fb.array([
-					this.fb.group({
-						name: this.fb.control('Defense'),
-						value: this.fb.control('AC'),
-						action: this.fb.control(''),
-					}),
-				]),
-			]),
-			body: this.fb.array([
-				this.fb.group({
-					type: this.fb.control('staff'),
-					levels: this.fb.array([
-						this.fb.group({
-							name: this.fb.control('Cantrip'),
-							spells: this.fb.array([
-								this.fb.group({
-									name: this.fb.control('Ray of Frost'),
-									notes: this.fb.control(''),
-								}),
-							]),
-						}),
-						this.fb.group({
-							name: this.fb.control('1st Level'),
-							spells: this.fb.array([
-								this.fb.group({
-									name: this.fb.control('Chilling Spray'),
-									notes: this.fb.control(''),
-								}),
-								this.fb.group({
-									name: this.fb.control('Snowball'),
-									notes: this.fb.control(''),
-								}),
-							]),
-						}),
-					]),
-				}),
-				this.fb.group({
-					type: this.fb.control('fluff'),
-					text: this.fb.control('You shape three needles out of a piece of metal in your possession and send them flying in a tight group toward one target.'),
-				}),
-				this.fb.group({
-					type: this.fb.control('text'),
-					text: this.fb.control('Make a spell attack roll against your target\'s AC. The needles deal 3d4 piercing damage and might cause bleeding. The needles impart any special properties of the metal that forms them; for instance, cold iron needles deal additional damage to creatures with weakness to cold iron. All the needles are made of the same metal, and the metal returns to you after the attack.'),
-				}),
-				this.fb.group({
-					type: this.fb.control('save'),
-					crit_success: this.fb.control('The target takes double damage and 1 persistent bleed damage.'),
-					success: this.fb.control('The target takes full damage.'),
-					failure: this.fb.control(''),
-					crit_failure: this.fb.control(''),
-				}),
-			]),
-			footer: this.fb.array([
-				this.fb.group({
-					type: this.fb.control('heightened'),
-					lines: this.fb.array([
-						this.fb.group({
-							cost: this.fb.control('+1'),
-							effect: this.fb.control('You send one additional needle, increasing the regular damage by 1d4 and increasing the persistent bleed damage on a critical hit by 1.'),
-						}),
-					]),
-				}),
-			]),
-		})
-
+		super()
+		this.loadSampleData()
 		this.onFormSubmit()
 	}
 
@@ -139,6 +35,7 @@ export class SidebarComponent{
 		{
 			label: 'Type',
 			traits: [
+				new CardTrait('Adjustment'),
 				new CardTrait('Attack'),
 				new CardTrait('Alchemical'),
 				new CardTrait('Aura'),
@@ -157,11 +54,12 @@ export class SidebarComponent{
 				new CardTrait('Magical'),
 				new CardTrait('Metamagic'),
 				new CardTrait('Talisman'),
+				new CardTrait('Tattoo'),
 				new CardTrait('Trap'),
 				new CardTrait('Potion'),
 				new CardTrait('Resource'),
 				new CardTrait('Spellshape'),
-
+				new CardTrait('Spellheart'),
 			]
 		},
 		{
@@ -177,7 +75,6 @@ export class SidebarComponent{
 				new CardTrait('Acid'),
 				new CardTrait('Cold'),
 				new CardTrait('Electricity'),
-				new CardTrait('Fire'),
 				new CardTrait('Force'),
 				new CardTrait('Negative'),
 				new CardTrait('Poison'),
@@ -260,13 +157,15 @@ export class SidebarComponent{
 			label: 'Weapon',
 			traits: [
 				new CardTrait('Agile', 'weapon'),
-				new CardTrait('Alchemical', 'weapon'),
 				new CardTrait('Attached', 'weapon'),
 				new CardTrait('Backstabber', 'weapon'),
 				new CardTrait('Backswing', 'weapon'),
 				new CardTrait('Brace', 'weapon'),
 				new CardTrait('Brutal', 'weapon'),
-				new CardTrait('Capacity', 'weapon'),
+				new CardTrait('Capacity 3', 'weapon'),
+				new CardTrait('Capacity 4 ', 'weapon'),
+				new CardTrait('Capacity 5', 'weapon'),
+				new CardTrait('Capacity 6', 'weapon'),
 				new CardTrait('Climbing', 'weapon'),
 				new CardTrait('Cobbled', 'weapon'),
 				new CardTrait('Combination', 'weapon'),
@@ -274,10 +173,16 @@ export class SidebarComponent{
 				new CardTrait('Concussive', 'weapon'),
 				new CardTrait('Critical', 'weapon'),
 				new CardTrait('Fusion', 'weapon'),
-				new CardTrait('Deadly', 'weapon'),
+				new CardTrait('Deadly d6', 'weapon'),
+				new CardTrait('Deadly d8', 'weapon'),
+				new CardTrait('Deadly d10', 'weapon'),
+				new CardTrait('Deadly d12', 'weapon'),
 				new CardTrait('Disarm', 'weapon'),
 				new CardTrait('Double Barrel', 'weapon'),
-				new CardTrait('Fatal', 'weapon'),
+				new CardTrait('Fatal d6', 'weapon'),
+				new CardTrait('Fatal d8', 'weapon'),
+				new CardTrait('Fatal d10', 'weapon'),
+				new CardTrait('Fatal d12', 'weapon'),
 				new CardTrait('Fatal Aim', 'weapon'),
 				new CardTrait('Finesse', 'weapon'),
 				new CardTrait('Forceful', 'weapon'),
@@ -285,7 +190,10 @@ export class SidebarComponent{
 				new CardTrait('Grapple', 'weapon'),
 				new CardTrait('Hampering', 'weapon'),
 				new CardTrait('Injection', 'weapon'),
-				new CardTrait('Jousting', 'weapon'),
+				new CardTrait('Jousting d6', 'weapon'),
+				new CardTrait('Jousting d8', 'weapon'),
+				new CardTrait('Jousting d10', 'weapon'),
+				new CardTrait('Jousting d12', 'weapon'),
 				new CardTrait('Kickback', 'weapon'),
 				new CardTrait('Modular', 'weapon'),
 				new CardTrait('Monk', 'weapon'),
@@ -294,7 +202,6 @@ export class SidebarComponent{
 				new CardTrait('Parry', 'weapon'),
 				new CardTrait('Portable', 'weapon'),
 				new CardTrait('Propulsive', 'weapon'),
-				new CardTrait('Range', 'weapon'),
 				new CardTrait('Ranged Trip', 'weapon'),
 				new CardTrait('Razing', 'weapon'),
 				new CardTrait('Reach', 'weapon'),
@@ -302,19 +209,31 @@ export class SidebarComponent{
 				new CardTrait('Reload', 'weapon'),
 				new CardTrait('Repeating', 'weapon'),
 				new CardTrait('Resonant', 'weapon'),
-				new CardTrait('Scatter', 'weapon'),
+				new CardTrait('Scatter 5ft', 'weapon'),
+				new CardTrait('Scatter 10fr', 'weapon'),
 				new CardTrait('Shove', 'weapon'),
 				new CardTrait('Sweep', 'weapon'),
 				new CardTrait('Tethered', 'weapon'),
-				new CardTrait('Thrown', 'weapon'),
+				new CardTrait('Thrown 10ft', 'weapon'),
+				new CardTrait('Thrown 20ft', 'weapon'),
+				new CardTrait('Thrown 40ft', 'weapon'),
 				new CardTrait('Training', 'weapon'),
 				new CardTrait('Trip', 'weapon'),
 				new CardTrait('Twin', 'weapon'),
-				new CardTrait('Two-Hand', 'weapon'),
+				new CardTrait('Two-Hand d6', 'weapon'),
+				new CardTrait('Two-Hand d8', 'weapon'),
+				new CardTrait('Two-Hand d10', 'weapon'),
+				new CardTrait('Two-Hand d12', 'weapon'),
 				new CardTrait('Unarmed', 'weapon'),
 				new CardTrait('Vehicular', 'weapon'),
-				new CardTrait('Versatile', 'weapon'),
-				new CardTrait('Volley', 'weapon'),
+				new CardTrait('Versatile P', 'weapon'),
+				new CardTrait('Versatile B', 'weapon'),
+				new CardTrait('Versatile S', 'weapon'),
+				new CardTrait('Volley 10ft', 'weapon'),
+				new CardTrait('Volley 20ft', 'weapon'),
+				new CardTrait('Volley 30ft', 'weapon'),
+				new CardTrait('Volley 40ft', 'weapon'),
+				new CardTrait('Volley 50ft', 'weapon'),
 			]
 		}
 	]
@@ -367,6 +286,13 @@ export class SidebarComponent{
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
 						type: this.fb.control('text'),
+						text: this.fb.control(''),
+					}))
+				break
+			case 'title':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('title'),
 						text: this.fb.control(''),
 					}))
 				break
@@ -451,20 +377,13 @@ export class SidebarComponent{
 				break;
 		}
 	}
-	removeFormArray(position: string, index: number) {
-		(<FormArray>this.cardForm.get(position)).removeAt(index)
-	}
-	getFormArray(position: string): FormArray {
-		return this.cardForm.get(position) as FormArray
-	}
 	// Form Array End
 
 	onFormSubmit() {
-		const newCard = new Card(
+		const newCard = new PF2AltCard(
 			this.cardForm.get('base')?.get('color')?.value,
+			this.cardForm.get('base')?.get('size')?.value,
 			this.cardForm.get('base')?.get('name')?.value,
-			this.cardForm.get('base')?.get('punctureHole')?.value,
-			this.cardForm.get('base')?.get('type')?.value + ' ' + this.cardForm.get('base')?.get('level')?.value,
 			this.cardForm.get('traits')?.value,
 			this.cardForm.get('header')?.value.map((header: any) => header.map((item: any) => item)),
 			this.cardForm.get('body')?.value.map((item: any) => {
@@ -473,6 +392,8 @@ export class SidebarComponent{
 						return new CardBodyFluff(item.text)
 					case 'text':
 						return new CardBodyText(item.text)
+					case 'title':
+						return new CardBodyTitle(item.text)
 					case 'ability':
 					case 'save':
 						return new CardBodyAbility(item)
@@ -494,6 +415,8 @@ export class SidebarComponent{
 						return new CardBodyFluff(item.text)
 					case 'text':
 						return new CardBodyText(item.text)
+					case 'title':
+						return new CardBodyTitle(item.text)
 					case 'ability':
 					case 'save':
 						return new CardBodyAbility(item)
@@ -509,72 +432,155 @@ export class SidebarComponent{
 
 		this.renderService.newCard(newCard);
 	}
+	override importLoad(data: any) {
+		// convert data.traits to CardTrait[]
+		data.traits = data.traits.map((trait: any) => new CardTrait(trait.name, trait.type))
 
-	onExport() {
-		// save to file
-		const data = JSON.stringify(this.cardForm.value, null, 4)
-		const blob = new Blob([data], { type: 'text/plain' })
-		const url = window.URL.createObjectURL(blob)
-		let fileName = this.cardForm.get('base')?.get('name')?.value.replace(/\s/g, '-') + '.json'
+		// reset and remove form controls
+		this.cardForm.reset()
+		this.getFormArray('header').clear()
+		this.getFormArray('body').clear()
+		this.getFormArray('footer').clear()
 
-		const a = document.createElement('a')
-		a.href = url
-		a.download = fileName
-		a.click()
-
-		console.info('Exported:', fileName, this.cardForm.value)
-		window.URL.revokeObjectURL(url)
-	}
-	onImport() {
-		// load from file
-		const input = document.createElement('input')
-		input.type = 'file'
-		input.accept = '.json'
-		input.onchange = (e) => {
-			const file:any = (<HTMLInputElement>e.target).files?.[0]
-			const reader = new FileReader()
-
-			reader.onload = (e) => {
-				const data = JSON.parse(<string>reader.result)
-				console.info('Imported:', file.name, data)
-
-				// convert data.traits to CardTrait[]
-				data.traits = data.traits.map((trait: any) => new CardTrait(trait.name, trait.type))
-
-				// reset and remove form controls
-				this.cardForm.reset()
-				this.getFormArray('header').clear()
-				this.getFormArray('body').clear()
-				this.getFormArray('footer').clear()
-
-				// add form controls
-				data.header.forEach(() => this.addFormArray('header', 'headerRow'))
-				data.body.forEach((line: any) => {
-					if (line.type === 'fluff') {
-						this.addFormArray('body', 'fluff')
-					} else if (line.type === 'text') {
-						this.addFormArray('body', 'text')
-					} else if (line.type === 'ability' || line.type === 'save') {
-						this.addFormArray('body', 'ability')
-					}
-				})
-				data.footer.forEach((line: any) => {
-					if (line.type === 'fluff') {
-						this.addFormArray('footer', 'fluff')
-					} else if (line.type === 'text') {
-						this.addFormArray('footer', 'text')
-					} else if (line.type === 'ability' || line.type === 'save') {
-						this.addFormArray('footer', 'ability')
-					}
-				})
-
-				this.cardForm.patchValue(data)
-				this.onFormSubmit()
+		// add form controls
+		data.header.forEach(() => this.addFormArray('header', 'header'))
+		data.body.forEach((line: any) => {
+			if (line.type === 'fluff') {
+				this.addFormArray('body', 'fluff')
+			} else if (line.type === 'text') {
+				this.addFormArray('body', 'text')
+			} else if (line.type === 'ability' || line.type === 'save') {
+				this.addFormArray('body', 'ability')
 			}
+		})
+		data.footer.forEach((line: any) => {
+			if (line.type === 'fluff') {
+				this.addFormArray('footer', 'fluff')
+			} else if (line.type === 'text') {
+				this.addFormArray('footer', 'text')
+			} else if (line.type === 'ability' || line.type === 'save') {
+				this.addFormArray('footer', 'ability')
+			}
+		})
 
-			reader.readAsText(file)
+		this.cardForm.patchValue(data)
+		this.onFormSubmit()
+	}
+
+	loadSampleData() {
+		const sampleType = this.currentSampleControl.value
+		this.currentSampleControl.setValue('')
+
+		switch (sampleType) {
+			case 'project':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Alchemist\'s Fire (Lesser)'),
+						size: this.fb.control('normal'),
+						color: this.fb.control('yellow'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+						new CardTrait('Alchemical'),
+						new CardTrait('Bomb'),
+						new CardTrait('Consumable'),
+						new CardTrait('Formula'),
+						new CardTrait('Fire'),
+						new CardTrait('Splash'),
+					]),
+					header: this.fb.array([
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('Usage'),
+								value: this.fb.control('held in 1 hand'),
+								action: this.fb.control(''),
+							}),
+						]),
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('Crafting Cost'),
+								value: this.fb.control('15sp'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Bulk'),
+								value: this.fb.control('L'),
+								action: this.fb.control(''),
+							}),
+						]),
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('Alchemist\'s fire is a combination of several volatile liquids that ignite when exposed to air.'),
+						}),
+						this.fb.group({
+							type: this.fb.control('ability'),
+							activate: this.fb.control('Strike'),
+							activateAction: this.fb.control('1'),
+							trigger: this.fb.control(''),
+							requirement: this.fb.control(''),
+							frequency: this.fb.control(''),
+							effect: this.fb.control('You throw the bomb, dealing 1d8 fire damage, 1 persistant fire damage and 1 splash fire damage'),
+						}),
+					]),
+					footer: this.fb.array([
+					]),
+				})
+				break
+			case 'item':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Erinys hair'),
+						size: this.fb.control('small'),
+						color: this.fb.control('grey'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+						new CardTrait('Fire'),
+						new CardTrait('Devil'),
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('Erinys are devil of vengance and bloddy justice, while an erinys appears as a fallen angel, only the first erinyes share that origin and now originate in a myriad of ways.'),
+						}),
+						this.fb.group({
+							type: this.fb.control('text'),
+							text: this.fb.control('The hair of an erinys are as flexible as normal rope, but as strong as steel wire and immune to fire, it has a Hardness of 5 and 20 Hitpoits.'),
+						}),
+					]),
+					footer: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('10 GP'),
+						}),
+					]),
+				})
+				break
+			default:
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control(''),
+						type: this.fb.control(''),
+						color: this.fb.control(''),
+						level: this.fb.control(''),
+						punctureHole: this.fb.control(false),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([
+					]),
+					footer: this.fb.array([
+					]),
+				})
+				break
 		}
-
-		input.click()
+		this.onFormSubmit()
 	}
 }

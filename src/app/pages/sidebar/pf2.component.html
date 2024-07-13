@@ -1,3 +1,12 @@
+
+<mat-button-toggle-group [formControl]="currentSampleControl" (change)="loadSampleData()" [hideSingleSelectionIndicator]="true">
+	<mat-button-toggle value="empty">Empty</mat-button-toggle>
+	<mat-button-toggle value="spell">Spellcard</mat-button-toggle>
+	<mat-button-toggle value="wonderous">Wonderous</mat-button-toggle>
+	<mat-button-toggle value="weapon">Weapon</mat-button-toggle>
+	<mat-button-toggle value="formula">Formula</mat-button-toggle>
+</mat-button-toggle-group>
+
 <form [formGroup]="cardForm" (ngSubmit)="onFormSubmit()">
 	<mat-card>
 		<mat-card-header>
@@ -10,26 +19,23 @@
 						<mat-label>Name</mat-label>
 						<input type="text" formControlName="name" matInput>
 					</mat-form-field>
-				
+				</block-row>
+				<block-row>
 					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
 						<mat-label>Type</mat-label>
-						<mat-select formControlName="type">
-							<mat-option value="cantrip">Cantrip</mat-option>
-							<mat-option value="spell">Spell</mat-option>
-							<mat-option value="item">Item</mat-option>
-						</mat-select>
+						<input type="text" formControlName="type" matInput>
 					</mat-form-field>
 				
 					<mat-form-field formGroupName="base" appearance="outline" floatLabel="always" color="accent">
 						<mat-label>Color</mat-label>
 						<mat-select formControlName="color">
-							<mat-option value="red">Red</mat-option>
-							<mat-option value="blue">Blue</mat-option>
-							<mat-option value="green">Green</mat-option>
-							<mat-option value="yellow">Yellow</mat-option>
-							<mat-option value="purple">Purple</mat-option>
+							<mat-option value="red">Red (Spells)</mat-option>
+							<mat-option value="blue">Blue (Items)</mat-option>
+							<mat-option value="green">Green (Monsters)</mat-option>
+							<mat-option value="yellow">Yellow (Projects)</mat-option>
+							<mat-option value="purple">Purple (Formulas)</mat-option>
 							<mat-option value="cyan">Cyan</mat-option>
-							<mat-option value="grey">Grey</mat-option>
+							<mat-option value="grey">Grey (Goods)</mat-option>
 						</mat-select>
 					</mat-form-field>
 				

@@ -1,12 +1,14 @@
 ::ng-deep {
     .mat-mdc-card {
-        background-color: lighten($color: #424242, $amount: 0);
+        $lighting-step: 5;
+
+        background-color: lighten($color: #424242, $amount: $lighting-step * 0);
         
         .mat-mdc-card {
-            background-color: lighten($color: #424242, $amount: 10);
+            background-color: lighten($color: #424242, $amount: $lighting-step * 1);
             
             .mat-mdc-card {
-                background-color: lighten($color: #424242, $amount: 20);
+                background-color: lighten($color: #424242, $amount: $lighting-step * 2);
             }
         }
     }

@@ -1,2 +1,10 @@
-<app-sidebar></app-sidebar>
+<div id="sidebar">
+    <mat-button-toggle-group [value]="cardType" [hideSingleSelectionIndicator]="true">
+        <mat-button-toggle routerLink="pf2" [value]="'pf2'">Pathfinder 2e</mat-button-toggle>
+        <mat-button-toggle routerLink="pf2-alt" [value]="'pf2-alt'">Pathfinder 2e - Alternative</mat-button-toggle>
+        <mat-button-toggle routerLink="swrpg" [value]="'swrpg'">Star Wars</mat-button-toggle>
+    </mat-button-toggle-group>
+    
+    <router-outlet></router-outlet>
+</div>
 <app-canvas></app-canvas>
