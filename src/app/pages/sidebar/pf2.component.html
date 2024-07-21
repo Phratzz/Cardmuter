@@ -133,7 +133,18 @@
 			<mat-card-title>Body</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
+			<block-flow #bodyContentContainer>
+			</block-flow>
 			<block-flow>
+				<button
+					type="button"
+					*ngFor="let component of buildingParts"
+					(click)="addComponent('body', component)"
+					mat-stroked-button
+				>{{component.traitName | titlecase}}</button>
+			</block-flow>
+
+			<block-flow *ngIf="false">
 				<ng-container formArrayName="body" *ngFor="let row of getFormArray('body')?.controls; let i = index">
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'fluff'">
 						<mat-card-header>

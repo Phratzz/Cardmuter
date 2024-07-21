@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait, CardBodyTitle } from 'src/app/models/pf2-alt.card.model';
 import { RenderService } from 'src/app/services/render.service';
-import { SidebarBase } from './base';
-import { CardBodyText } from 'src/app/traits/text.trait';
+import { SidebarBase } from './base.component';
+import { CardBodyText } from 'src/app/traits/text.trait.component';
 import { CardBodyFluff } from 'src/app/traits/fluff.trait';
 
 @Component({

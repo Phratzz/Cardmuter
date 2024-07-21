@@ -1,32 +1,41 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait } from 'src/app/models/pf2.card.model';
 import { RenderService } from 'src/app/services/render.service';
-import { SidebarBase } from './base';
-import { TextTrait } from 'src/app/traits/text.trait';
+import { SidebarBase } from './base.component';
+import { TextTrait } from 'src/app/traits/text.trait.component';
 import { FluffTrait } from 'src/app/traits/fluff.trait';
+import { ComponentLoaderService } from 'src/app/services/componentLoader.service';
 
 @Component({
 	selector: 'app-sidebar-pf2',
 	templateUrl: './pf2.component.html',
 	styleUrls: ['./base.scss']
 })
-export class PF2SidebarComponent extends SidebarBase{
-	currentSampleControl = new FormControl('test')
+export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
+	public currentSampleControl = new FormControl('test')
+	public buildingParts: any[] = [];
 
-	private buildingParts: any[] = [];
+	@ViewChild('bodyContentContainer', { read: ViewContainerRef }) bodyContentContainer: ViewContainerRef
 
 	constructor(
 		private fb: FormBuilder,
 		private renderService: RenderService,
+		private componentLoaderService: ComponentLoaderService,
 	) {
 		super()
 
-		this.buildingParts.push(new TextTrait(this.fb))
-		this.buildingParts.push(new FluffTrait(this.fb))
+		this.buildingParts.push(TextTrait)
+		//this.buildingParts.push(new FluffTrait(this.fb))
 
 		this.loadSampleData()
 		this.onFormSubmit()
+	}
+
+	ngAfterViewInit() {
+		this.buildingParts.forEach((part) => {
+			//this.componentLoaderService.loadDynamicComponent(this.bodyContentContainer, part)
+		})
 	}
 
 	public traits = [
@@ -258,13 +267,21 @@ export class PF2SidebarComponent extends SidebarBase{
 	}
 	// Traits End
 
+	addComponent(type: string, component: any) {
+		this.componentLoaderService.loadDynamicComponent(this.bodyContentContainer, component)
+	}
+
 	// Form Array
 	addFormArray(position: string, type: string) {
 		this.buildingParts.forEach((part) => {
 			if(part.traitName === type) {
 				// if function is available, call it
-				if(part.addFormArray) {
-					part.addFormArray(position, this.cardForm)
+				if(part.getFormGroup) {
+					const formGroup = part.getFormGroup()
+					
+					if(formGroup) {
+						(<FormArray>this.cardForm.get(position)).push(formGroup)
+					}
 				}
 			}
 		})
@@ -771,9 +788,6 @@ export class PF2SidebarComponent extends SidebarBase{
 						new CardTrait('Alchemical'),
 						new CardTrait('Bomb'),
 						new CardTrait('Consumable'),
-						new CardTrait('Formula'),
-						new CardTrait('Fire'),
-						new CardTrait('Splash'),
 					]),
 					header: this.fb.array([
 						this.fb.array([
@@ -785,10 +799,6 @@ export class PF2SidebarComponent extends SidebarBase{
 						]),
 					]),
 					body: this.fb.array([
-						this.fb.group({
-							type: this.fb.control('text'),
-							text: this.fb.control('Alchemist\'s fire is a combination of several volatile liquids that ignite when exposed to air.'),
-						}),
 					]),
 					footer: this.fb.array([
 					]),

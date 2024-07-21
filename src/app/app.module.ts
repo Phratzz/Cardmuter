@@ -12,14 +12,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { BlockRowComponent } from './building-blocks/block-row';
 import { BlockFlowComponent } from './building-blocks/block-flow';
 import { PF2AltSidebarComponent } from './pages/sidebar/pf2-alt.component';
+import { TextTrait } from './traits/text.trait.component';
 
 @NgModule({
 	declarations: [
 		AppComponent,
 		CanvasComponent,
 		IndexComponent,
+		
 		PF2SidebarComponent,
 		PF2AltSidebarComponent,
+
+		TextTrait,
+
 		BlockFlowComponent,
 		BlockRowComponent,
 	],

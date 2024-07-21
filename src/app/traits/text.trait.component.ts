@@ -1,19 +1,22 @@
-import { FormArray, FormBuilder, FormGroup } from "@angular/forms"
+import { FormBuilder, FormGroup } from "@angular/forms";
 import { TraitInterface } from "../interfaces/trait.interface"
+import { Component } from "@angular/core";
 
+@Component({
+	templateUrl: './text.trait.component.html',
+})
 export class TextTrait implements TraitInterface {
-    public traitName = "text"
+    static traitName = "text"
 
 	constructor(
 		private fb: FormBuilder,
 	) {}
 
-    public addFormArray(position: string, cardform: FormGroup): void {
-        (<FormArray>cardform.get(position)).push(
-            this.fb.group({
-                type: this.fb.control(this.traitName),
-                text: this.fb.control(''),
-            }))
+    public getFormGroup(): FormGroup {
+        return this.fb.group({
+            type: this.fb.control(TextTrait.traitName),
+            text: this.fb.control(''),
+        })
     }
 
     public formatForFormSubmit(item: any): CardBodyText {

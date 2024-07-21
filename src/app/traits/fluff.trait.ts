@@ -1,4 +1,4 @@
-import { FormArray, FormBuilder, FormGroup } from "@angular/forms"
+import { FormBuilder, FormGroup } from "@angular/forms";
 import { TraitInterface } from "../interfaces/trait.interface"
 
 export class FluffTrait implements TraitInterface {
@@ -8,12 +8,11 @@ export class FluffTrait implements TraitInterface {
 		private fb: FormBuilder,
 	) {}
 
-    public addFormArray(position: string, cardform: FormGroup): void {
-        (<FormArray>cardform.get(position)).push(
-            this.fb.group({
-                type: this.fb.control(this.traitName),
-                text: this.fb.control(''),
-            }))
+    public getFormGroup(): FormGroup {
+        return this.fb.group({
+            type: this.fb.control(this.traitName),
+            text: this.fb.control(''),
+        })
     }
 
     public formatForFormSubmit(item: any): CardBodyFluff {
