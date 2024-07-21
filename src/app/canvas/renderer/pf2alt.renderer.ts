@@ -1,7 +1,6 @@
 import { Component, ElementRef } from '@angular/core';
 import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyTitle } from '../../models/pf2-alt.card.model';
-import { CardBodyText } from 'src/app/traits/text.trait';
-import { CardBodyFluff } from 'src/app/traits/fluff.trait';
+import { CardBodyFluff, CardBodyText } from 'src/app/models/pf2.card.model';
 
 @Component({
     template: ''

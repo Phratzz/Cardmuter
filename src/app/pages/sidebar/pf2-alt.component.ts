@@ -3,8 +3,7 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait, CardBodyTitle } from 'src/app/models/pf2-alt.card.model';
 import { RenderService } from 'src/app/services/render.service';
 import { SidebarBase } from './base';
-import { CardBodyText } from 'src/app/traits/text.trait';
-import { CardBodyFluff } from 'src/app/traits/fluff.trait';
+import { CardBodyFluff, CardBodyText } from 'src/app/models/pf2.card.model';
 
 @Component({
 	selector: 'app-sidebar-pf2-alt',

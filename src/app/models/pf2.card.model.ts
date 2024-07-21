@@ -39,6 +39,26 @@ export class CardTrait {
     }
 }
 
+export class CardBodyText {
+    text: string[];
+
+    constructor(
+        ...text: string[]
+    ) {
+        this.text = text;
+    }
+}
+
+export class CardBodyFluff {
+    text: string[];
+
+    constructor(
+        ...text: string[]
+    ) {
+        this.text = text;
+    }
+}
+
 export class CardHeaderItem {
     constructor(
         public name: string,

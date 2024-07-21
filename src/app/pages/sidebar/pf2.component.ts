@@ -3,8 +3,6 @@ import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait } from 'src/app/models/pf2.card.model';
 import { RenderService } from 'src/app/services/render.service';
 import { SidebarBase } from './base';
-import { TextTrait } from 'src/app/traits/text.trait';
-import { FluffTrait } from 'src/app/traits/fluff.trait';
 
 @Component({
 	selector: 'app-sidebar-pf2',
@@ -21,10 +19,7 @@ export class PF2SidebarComponent extends SidebarBase{
 		private renderService: RenderService,
 	) {
 		super()
-
-		this.buildingParts.push(new TextTrait(this.fb))
-		this.buildingParts.push(new FluffTrait(this.fb))
-
+		
 		this.loadSampleData()
 		this.onFormSubmit()
 	}

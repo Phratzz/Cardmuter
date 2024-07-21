@@ -1,7 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
-import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel } from '../../models/pf2.card.model';
-import { CardBodyText } from 'src/app/traits/text.trait';
-import { CardBodyFluff } from 'src/app/traits/fluff.trait';
+import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyFluff, CardBodyText } from '../../models/pf2.card.model';
 
 @Component({
     template: ''
@@ -25,7 +23,7 @@ export class PF2CardRenderer {
 			traitColorWidth: 12,
 			traitColorHeight: 6,
 			traitFontSize: 70,
-			traitRowAmount: 3,
+			traitRowAmount: 4,
 
 			bodyFontSize: 52,
 		},
