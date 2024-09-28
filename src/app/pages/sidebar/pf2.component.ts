@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait } from 'src/app/models/pf2.card.model';
+import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait, CardBodyFluff, CardBodyText } from 'src/app/models/pf2.card.model';
 import { RenderService } from 'src/app/services/render.service';
 import { SidebarBase } from './base';
 
@@ -10,7 +10,7 @@ import { SidebarBase } from './base';
 	styleUrls: ['./base.scss']
 })
 export class PF2SidebarComponent extends SidebarBase{
-	currentSampleControl = new FormControl('test')
+	currentSampleControl = new FormControl('armor')
 
 	private buildingParts: any[] = [];
 
@@ -136,6 +136,7 @@ export class PF2SidebarComponent extends SidebarBase{
 				new CardTrait('Telepathy'),
 				new CardTrait('Teleportation'),
 				new CardTrait('Virulent'),
+				new CardTrait('Visual'),
 				new CardTrait('Vocal'),
 			]
 		},
@@ -265,6 +266,20 @@ export class PF2SidebarComponent extends SidebarBase{
 		})
 
 		switch (type) {
+			case 'fluff':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('fluff'),
+						text: this.fb.control(''),
+					}))
+				break
+			case 'text':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('text'),
+						text: this.fb.control(''),
+					}))
+				break
 			case 'header':
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.array([
@@ -301,6 +316,24 @@ export class PF2SidebarComponent extends SidebarBase{
 				(<FormArray>this.cardForm.get(position)).push(
 					this.fb.group({
 						type: this.fb.control('save'),
+						crit_success: this.fb.control(''),
+						success: this.fb.control(''),
+						failure: this.fb.control(''),
+						crit_failure: this.fb.control(''),
+					}))
+				break;
+			case 'abilityAdvanced':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('abilityAdvanced'),
+						
+						activate: this.fb.control(''),
+						activateAction: this.fb.control(''),
+						trigger: this.fb.control(''),
+						requirement: this.fb.control(''),
+						frequency: this.fb.control(''),
+						effect: this.fb.control(''),
+
 						crit_success: this.fb.control(''),
 						success: this.fb.control(''),
 						failure: this.fb.control(''),
@@ -383,8 +416,13 @@ export class PF2SidebarComponent extends SidebarBase{
 				}
 
 				switch (item.type) {
+					case 'fluff':
+						return new CardBodyFluff(item.text)
+					case 'text':
+						return new CardBodyText(item.text)
 					case 'ability':
 					case 'save':
+					case 'abilityAdvanced':
 						return new CardBodyAbility(item)
 					case 'heightened':
 						return new CardBodyAbility({
@@ -746,6 +784,95 @@ export class PF2SidebarComponent extends SidebarBase{
 							requirement: this.fb.control(''),
 							frequency: this.fb.control(''),
 							effect: this.fb.control('You throw the bomb, dealing 1d8 fire damage, 1 persistant fire damage and 1 splash fire damage'),
+						}),
+					]),
+					footer: this.fb.array([
+					]),
+				})
+				break
+			case 'armor':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Oaken Weave'),
+						type: this.fb.control('Item'),
+						color: this.fb.control('blue'),
+						level: this.fb.control('2'),
+						punctureHole: this.fb.control(false),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+						new CardTrait('Abjuration'),
+						new CardTrait('Magical'),
+						new CardTrait('Plant'),
+
+						new CardTrait('Laminar', 'weapon'),
+					]),
+					header: this.fb.array([
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('AC Bonus'),
+								value: this.fb.control('+1'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Dex Cap'),
+								value: this.fb.control('+4'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Check Penalty'),
+								value: this.fb.control('-1'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Speed Penalty'),
+								value: this.fb.control('—'),
+								action: this.fb.control(''),
+							}),
+						]),
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('Strength'),
+								value: this.fb.control('10'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Category'),
+								value: this.fb.control('Light'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Group'),
+								value: this.fb.control('Wood'),
+								action: this.fb.control(''),
+							}),
+						]),
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('Price'),
+								value: this.fb.control('10gp'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Bulk'),
+								value: this.fb.control('1'),
+								action: this.fb.control(''),
+							}),
+						]),
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('Armor made by elven artisans from the wood and hardned leaves of the oaken tree.'),
+						}),
+						this.fb.group({
+							type: this.fb.control('ability'),
+							activate: this.fb.control('Cast a spell'),
+							activateAction: this.fb.control('2'),
+							trigger: this.fb.control(''),
+							requirement: this.fb.control(''),
+							frequency: this.fb.control('Once per day'),
+							effect: this.fb.control('You gain resistance 2 to bludgeoning, piercing damage and weakness 3 to fire for 10 minutes. After taking fire damage you may dismiss the effect as a free action.'),
 						}),
 					]),
 					footer: this.fb.array([

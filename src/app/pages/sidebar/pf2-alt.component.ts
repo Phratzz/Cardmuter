@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait, CardBodyTitle } from 'src/app/models/pf2-alt.card.model';
+import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait, CardBodyTitle, CardBodyChecks, CardBodyHunting, CardBodyHuntingType } from 'src/app/models/pf2-alt.card.model';
 import { RenderService } from 'src/app/services/render.service';
 import { SidebarBase } from './base';
 import { CardBodyFluff, CardBodyText } from 'src/app/models/pf2.card.model';
@@ -11,7 +11,7 @@ import { CardBodyFluff, CardBodyText } from 'src/app/models/pf2.card.model';
 	styleUrls: ['./base.scss']
 })
 export class PF2AltSidebarComponent extends SidebarBase{
-	currentSampleControl = new FormControl('item')
+	currentSampleControl = new FormControl('cooking')
 
 	constructor(
 		private fb: FormBuilder,
@@ -135,6 +135,14 @@ export class PF2AltSidebarComponent extends SidebarBase{
 				new CardTrait('Teleportation'),
 				new CardTrait('Virulent'),
 				new CardTrait('Vocal'),
+			]
+		},
+		{
+			label: 'Runes',
+			traits: [
+				new CardTrait('Accessory Rune', 'weapon'),
+				new CardTrait('Property Rune', 'weapon'),
+				new CardTrait('Fundamental Rune', 'weapon'),
 			]
 		},
 		{
@@ -317,6 +325,52 @@ export class PF2AltSidebarComponent extends SidebarBase{
 						crit_failure: this.fb.control(''),
 					}))
 				break;
+			case 'hunting':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('hunting'),
+						crit_success: this.fb.group({
+							basic: this.fb.control(''),
+							special: this.fb.control(''),
+							text: this.fb.control(''),
+						}),
+						success: this.fb.group({
+							basic: this.fb.control(''),
+							special: this.fb.control(''),
+							text: this.fb.control(''),
+						}),
+						failure: this.fb.group({
+							basic: this.fb.control(''),
+							special: this.fb.control(''),
+							text: this.fb.control(''),
+						}),
+						crit_failure: this.fb.group({
+							basic: this.fb.control(''),
+							special: this.fb.control(''),
+							text: this.fb.control(''),
+						}),
+					}))
+				break;
+			case 'cooking':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('cooking'),
+						cost: this.fb.group({
+							basic: this.fb.control(''),
+							special: this.fb.control(''),
+							text: this.fb.control(''),
+						}),
+						crit_success: this.fb.group({
+							text: this.fb.control(''),
+						}),
+						success: this.fb.group({
+							text: this.fb.control(''),
+						}),
+						crit_failure: this.fb.group({
+							text: this.fb.control(''),
+						}),
+					}))
+				break;
 
 			case 'heightened':
 				(<FormArray>this.cardForm.get(position)).push(
@@ -374,6 +428,12 @@ export class PF2AltSidebarComponent extends SidebarBase{
 						notes: this.fb.control(''),
 					}))
 				break;
+			case 'checks':
+				(<FormArray>this.cardForm.get(position)).push(
+					this.fb.group({
+						type: this.fb.control('checks'),
+						checks: this.fb.control(''),
+					}))
 		}
 	}
 	// Form Array End
@@ -393,6 +453,8 @@ export class PF2AltSidebarComponent extends SidebarBase{
 						return new CardBodyText(item.text)
 					case 'title':
 						return new CardBodyTitle(item.text)
+					case 'checks':
+						return new CardBodyChecks(item.checks)
 					case 'ability':
 					case 'save':
 						return new CardBodyAbility(item)
@@ -404,6 +466,22 @@ export class PF2AltSidebarComponent extends SidebarBase{
 						return new CardBodyAbility({
 							staff: item.levels.map((level: any) =>new CardBodyAbilityStaffLevel(level.name, level.spells.map((spell: any) => new CardBodyAbilityStaffSpell(spell.name, spell.notes))))
 						})
+					case 'hunting':
+						return new CardBodyHunting(
+							new CardBodyHuntingType(item.crit_success.text, item.crit_success.basic, item.crit_success.special),
+							new CardBodyHuntingType(item.success.text, item.success.basic, item.success.special),
+							new CardBodyHuntingType(item.failure.text, item.failure.basic, item.failure.special),
+							new CardBodyHuntingType(item.crit_failure.text, item.crit_failure.basic, item.crit_failure.special),
+							new CardBodyHuntingType("", "", ""),
+						)
+					case 'cooking':
+						return new CardBodyHunting(
+							new CardBodyHuntingType(item.crit_success.text, "", ""),
+							new CardBodyHuntingType(item.success.text, "", ""),
+							new CardBodyHuntingType("", "", ""),
+							new CardBodyHuntingType(item.crit_failure.text, "", ""),
+							new CardBodyHuntingType(item.cost.text, item.cost.basic, item.cost.special),
+						)
 					default:
 						return null
 				}
@@ -416,6 +494,8 @@ export class PF2AltSidebarComponent extends SidebarBase{
 						return new CardBodyText(item.text)
 					case 'title':
 						return new CardBodyTitle(item.text)
+					case 'checks':
+						return new CardBodyChecks(item.checks)
 					case 'ability':
 					case 'save':
 						return new CardBodyAbility(item)
@@ -471,59 +551,87 @@ export class PF2AltSidebarComponent extends SidebarBase{
 		this.currentSampleControl.setValue('')
 
 		switch (sampleType) {
-			case 'project':
+			case 'project2':
 				this.cardForm = this.fb.group({
 					base: this.fb.group({
-						name: this.fb.control('Alchemist\'s Fire (Lesser)'),
+						name: this.fb.control('Staff of Tricky Minds'),
 						size: this.fb.control('normal'),
 						color: this.fb.control('yellow'),
 					}),
 					traitInput: this.fb.control(''),
 					traits: this.fb.control([
-						new CardTrait('Alchemical'),
-						new CardTrait('Bomb'),
-						new CardTrait('Consumable'),
-						new CardTrait('Formula'),
-						new CardTrait('Fire'),
-						new CardTrait('Splash'),
 					]),
 					header: this.fb.array([
-						this.fb.array([
-							this.fb.group({
-								name: this.fb.control('Usage'),
-								value: this.fb.control('held in 1 hand'),
-								action: this.fb.control(''),
-							}),
-						]),
-						this.fb.array([
-							this.fb.group({
-								name: this.fb.control('Crafting Cost'),
-								value: this.fb.control('15sp'),
-								action: this.fb.control(''),
-							}),
-							this.fb.group({
-								name: this.fb.control('Bulk'),
-								value: this.fb.control('L'),
-								action: this.fb.control(''),
-							}),
-						]),
 					]),
 					body: this.fb.array([
 						this.fb.group({
 							type: this.fb.control('fluff'),
-							text: this.fb.control('Alchemist\'s fire is a combination of several volatile liquids that ignite when exposed to air.'),
+							text: this.fb.control(
+								'An item imagined by Cruxie, a staff to help her on her journey, this staff should be able perform mental tricks like its owner'
+							),
 						}),
 						this.fb.group({
-							type: this.fb.control('ability'),
-							activate: this.fb.control('Strike'),
-							activateAction: this.fb.control('1'),
-							trigger: this.fb.control(''),
-							requirement: this.fb.control(''),
-							frequency: this.fb.control(''),
-							effect: this.fb.control('You throw the bomb, dealing 1d8 fire damage, 1 persistant fire damage and 1 splash fire damage'),
+							type: this.fb.control('fluff'),
+							text: this.fb.control(
+								'Due to her kitsune heritage, the staff should have a small hook near the end to hang where a foxfire lantern can be hung'
+							),
 						}),
 					]),
 					footer: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('Requirements'),
+						}),
+						this.fb.group({
+							type: this.fb.control('text'),
+							text: this.fb.control(
+								'• An ingredient to create the staff from, must have the Mental trait'+'\r\n'+
+								'• A casting of: Infectious Enthusiasm'+'\r\n'+
+								'• A name for the staff'
+							),
+						}),
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('Crafting — DC 16'),
+						}),
+						this.fb.group({
+							type: this.fb.control('checks'),
+							checks: this.fb.control('10'),
+						}),
+					]),
+				})
+				break
+			case 'project':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('On the subject of Oozes'),
+						size: this.fb.control('normal'),
+						color: this.fb.control('yellow'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('While delving into a tower found in a small forest clearing, several old tomes were found'),
+						}),
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('Among them, a collection of notes and sketches about oozes and their properties'),
+						}),
+					]),
+					footer: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('Occultism — DC 16'),
+						}),
+						this.fb.group({
+							type: this.fb.control('checks'),
+							checks: this.fb.control('6'),
+						}),
 					]),
 				})
 				break
@@ -555,6 +663,127 @@ export class PF2AltSidebarComponent extends SidebarBase{
 						this.fb.group({
 							type: this.fb.control('title'),
 							text: this.fb.control('10 GP'),
+						}),
+					]),
+				})
+				break
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('On the subject of Oozes'),
+						size: this.fb.control('normal'),
+						color: this.fb.control('yellow'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('While delving into a tower found in a small forest clearing, several old tomes were found'),
+						}),
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('Among them, a collection of notes and sketches about oozes and their properties'),
+						}),
+					]),
+					footer: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('Occultism — DC 16'),
+						}),
+						this.fb.group({
+							type: this.fb.control('checks'),
+							checks: this.fb.control('6'),
+						}),
+					]),
+				})
+				break
+			case 'hunting':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Rabbits'),
+						size: this.fb.control('small'),
+						color: this.fb.control('green'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('fluff'),
+							text: this.fb.control('During your hunt you come across a small flock of rabbits, or similar small game'),
+						}),
+						this.fb.group({
+							type: this.fb.control('hunting'),
+							crit_success: this.fb.group({
+								basic: this.fb.control('16'),
+								special: this.fb.control(''),
+								text: this.fb.control(''),
+							}),
+							success: this.fb.group({
+								basic: this.fb.control('2d8'),
+								special: this.fb.control(''),
+								text: this.fb.control(''),
+							}),
+							failure: this.fb.group({
+								basic: this.fb.control(''),
+								special: this.fb.control(''),
+								text: this.fb.control(''),
+							}),
+							crit_failure: this.fb.group({
+								basic: this.fb.control(''),
+								special: this.fb.control(''),
+								text: this.fb.control('You become fatigued'),
+							}),
+						}),
+					]),
+					footer: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('Survival vs DC 15'),
+						}),
+					]),
+				})
+				break
+			case 'cooking':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Hearty Meal'),
+						size: this.fb.control('small'),
+						color: this.fb.control('yellow'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('cooking'),
+							cost: this.fb.group({
+								basic: this.fb.control('4'),
+								special: this.fb.control(''),
+								text: this.fb.control(''),
+							}),
+							crit_success: this.fb.group({
+								text: this.fb.control('You gain a +1 status bonus to the next 3 saving throws you attempt within 24 hours'),
+							}),
+							success: this.fb.group({
+								text: this.fb.control('You gain a +1 status bonus to the next saving throw you attempt within 24 hours'),
+							}),
+							crit_failure: this.fb.group({
+								text: this.fb.control('You suffer a -1 status penalty to initiative checks until you rest and begin your daily preperations'),
+							}),
+						}),
+					]),
+					footer: this.fb.array([
+						this.fb.group({
+							type: this.fb.control('title'),
+							text: this.fb.control('Survival vs DC 12'),
 						}),
 					]),
 				})

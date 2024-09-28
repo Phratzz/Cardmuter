@@ -1,8 +1,11 @@
 
 <mat-button-toggle-group [formControl]="currentSampleControl" (change)="loadSampleData()" [hideSingleSelectionIndicator]="true">
 	<mat-button-toggle value="empty">Empty</mat-button-toggle>
-	<mat-button-toggle value="project">Project</mat-button-toggle>
+	<mat-button-toggle value="project">Project 1</mat-button-toggle>
+	<mat-button-toggle value="project2">Project 2</mat-button-toggle>
 	<mat-button-toggle value="item">Item</mat-button-toggle>
+	<mat-button-toggle value="hunting">Hunting</mat-button-toggle>
+	<mat-button-toggle value="cooking">Cooking</mat-button-toggle>
 </mat-button-toggle-group>
 
 <form [formGroup]="cardForm" (ngSubmit)="onFormSubmit()">
@@ -161,6 +164,25 @@
 						</mat-card-content>
 					</mat-card>
 
+					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'checks'">
+						<mat-card-header>
+							<mat-card-title>Checks</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Number of checks</mat-label>
+									<input type="text" formControlName="checks" matInput>
+								</mat-form-field>
+							</block-row>
+
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Checks</button>
+							</block-row>
+						</mat-card-content>
+					</mat-card>
+
 					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'ability'">
 						<mat-card-header>
 							<mat-card-title>Item Ability</mat-card-title>
@@ -220,15 +242,15 @@
 						<mat-card-content>
 							<block-row>
 								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Success</mat-label>
-									<input type="text" formControlName="success" matInput>
+									<mat-label>Critical Success</mat-label>
+									<input type="text" formControlName="crit_success" matInput>
 								</mat-form-field>
 							</block-row>
 
 							<block-row>
 								<mat-form-field appearance="outline" floatLabel="always" color="accent">
-									<mat-label>Critical Success</mat-label>
-									<input type="text" formControlName="crit_success" matInput>
+									<mat-label>Success</mat-label>
+									<input type="text" formControlName="success" matInput>
 								</mat-form-field>
 							</block-row>
 
@@ -322,15 +344,213 @@
 							</block-flow>
 						</mat-card-content>
 					</mat-card>
+
+					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'hunting'">
+						<mat-card-header>
+							<mat-card-title>Hunting Table</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-flow>
+								<mat-card formGroupName="crit_success">
+									<mat-card-header>
+										<mat-card-title>Critical Success</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<block-row>
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Basic Ingredients</mat-label>
+													<input type="text" formControlName="basic" matInput>
+												</mat-form-field>
+
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Special Ingredients</mat-label>
+													<input type="text" formControlName="special" matInput>
+												</mat-form-field>
+											</block-row>
+
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+
+								<mat-card formGroupName="success">
+									<mat-card-header>
+										<mat-card-title>Success</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<block-row>
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Basic Ingredients</mat-label>
+													<input type="text" formControlName="basic" matInput>
+												</mat-form-field>
+
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Special Ingredients</mat-label>
+													<input type="text" formControlName="special" matInput>
+												</mat-form-field>
+											</block-row>
+
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+
+								<mat-card formGroupName="failure">
+									<mat-card-header>
+										<mat-card-title>Failure</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<block-row>
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Basic Ingredients</mat-label>
+													<input type="text" formControlName="basic" matInput>
+												</mat-form-field>
+
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Special Ingredients</mat-label>
+													<input type="text" formControlName="special" matInput>
+												</mat-form-field>
+											</block-row>
+
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+
+								<mat-card formGroupName="crit_failure">
+									<mat-card-header>
+										<mat-card-title>Critical Failure</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<block-row>
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Basic Ingredients</mat-label>
+													<input type="text" formControlName="basic" matInput>
+												</mat-form-field>
+
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Special Ingredients</mat-label>
+													<input type="text" formControlName="special" matInput>
+												</mat-form-field>
+											</block-row>
+
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+							</block-flow>
+
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Hunting</button>
+							</block-row>
+						</mat-card-content>
+					</mat-card>
+
+					<mat-card [formGroupName]="i" *ngIf="getFormArray('body.'+i+'.type')?.value == 'cooking'">
+						<mat-card-header>
+							<mat-card-title>Cooking Table</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-flow>
+								<mat-card formGroupName="cost">
+									<mat-card-header>
+										<mat-card-title>Cost</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<block-row>
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Basic Ingredients</mat-label>
+													<input type="text" formControlName="basic" matInput>
+												</mat-form-field>
+
+												<mat-form-field appearance="outline" floatLabel="always" color="accent">
+													<mat-label>Special Ingredients</mat-label>
+													<input type="text" formControlName="special" matInput>
+												</mat-form-field>
+											</block-row>
+
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+
+								<mat-card formGroupName="crit_success">
+									<mat-card-header>
+										<mat-card-title>Critical Success</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+
+								<mat-card formGroupName="success">
+									<mat-card-header>
+										<mat-card-title>Success</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+
+								<mat-card formGroupName="crit_failure">
+									<mat-card-header>
+										<mat-card-title>Critical Failure</mat-card-title>
+									</mat-card-header>
+									<mat-card-content>
+										<block-flow>
+											<mat-form-field appearance="outline" floatLabel="always" color="accent">
+												<mat-label>Extra Effects</mat-label>
+												<input type="text" formControlName="text" matInput>
+											</mat-form-field>
+										</block-flow>
+									</mat-card-content>
+								</mat-card>
+							</block-flow>
+
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('body', i)">Remove Cooking</button>
+							</block-row>
+						</mat-card-content>
+					</mat-card>
 				</ng-container>
 				
 				<block-row>
 					<button type="button" (click)="addFormArray('body', 'fluff')" mat-stroked-button>Fluff</button>
 					<button type="button" (click)="addFormArray('body', 'text')" mat-stroked-button>Text</button>
 					<button type="button" (click)="addFormArray('body', 'ability')" mat-stroked-button>Ability</button>
-					<button type="button" (click)="addFormArray('body', 'save')" mat-stroked-button>Save</button>
-					<button type="button" (click)="addFormArray('body', 'heightened')" mat-stroked-button>Heighten</button>
-					<button type="button" (click)="addFormArray('body', 'staff')" mat-stroked-button>Staff</button>
+					<button type="button" (click)="addFormArray('body', 'hunting')" mat-stroked-button>Hunting</button>
 				</block-row>
 			</block-flow>
 		</mat-card-content>
@@ -561,16 +781,31 @@
 							</block-row>
 						</mat-card-content>
 					</mat-card>
+
+					<mat-card [formGroupName]="i" *ngIf="getFormArray('footer.'+i+'.type')?.value == 'checks'">
+						<mat-card-header>
+							<mat-card-title>Checks</mat-card-title>
+						</mat-card-header>
+						
+						<mat-card-content>
+							<block-row>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Number of checks</mat-label>
+									<input type="text" formControlName="checks" matInput>
+								</mat-form-field>
+							</block-row>
+
+							<block-row>
+								<button type="button" mat-stroked-button (click)="removeFormArray('footer', i)">Remove Checks</button>
+							</block-row>
+						</mat-card-content>
+					</mat-card>
 				</ng-container>
 
 				<block-row>
-					<button type="button" (click)="addFormArray('footer', 'fluff')" mat-stroked-button>Fluff</button>
-					<button type="button" (click)="addFormArray('footer', 'text')" mat-stroked-button>Text</button>
-					<button type="button" (click)="addFormArray('footer', 'ability')" mat-stroked-button>Ability</button>
-					<button type="button" (click)="addFormArray('footer', 'save')" mat-stroked-button>Save</button>
-					<button type="button" (click)="addFormArray('footer', 'heightened')" mat-stroked-button>Heighten</button>
-					<button type="button" (click)="addFormArray('footer', 'staff')" mat-stroked-button>Staff</button>
 					<button type="button" (click)="addFormArray('footer', 'title')" mat-stroked-button>Title</button>
+					<button type="button" (click)="addFormArray('footer', 'text')" mat-stroked-button>Text</button>
+					<button type="button" (click)="addFormArray('footer', 'checks')" mat-stroked-button>Checks</button>
 				</block-row>
 			</block-flow>
 		</mat-card-content>

@@ -76,6 +76,16 @@ export class CardBodyTitle {
     }
 }
 
+export class CardBodyChecks {
+    checks: string;
+
+    constructor(
+        checks: string
+    ) {
+        this.checks = checks;
+    }
+}
+
 export class CardBodyAbility {
     activate: string;
     activateAction?: string;
@@ -120,4 +130,21 @@ export class CardBodyAbility {
         this.heightened = heightened;
         this.staff = staff;
     }
+}
+
+export class CardBodyHuntingType {
+    constructor(
+        public text: string,
+        public basic: string,
+        public special: string,
+    ) {}
+}
+export class CardBodyHunting {
+    constructor(
+        public crit_success: CardBodyHuntingType,
+        public success: CardBodyHuntingType,
+        public failure: CardBodyHuntingType,
+        public crit_failure: CardBodyHuntingType,
+        public cost: CardBodyHuntingType,
+    ) {}
 }

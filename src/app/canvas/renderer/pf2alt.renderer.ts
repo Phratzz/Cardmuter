@@ -1,5 +1,5 @@
 import { Component, ElementRef } from '@angular/core';
-import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyTitle } from '../../models/pf2-alt.card.model';
+import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyTitle, CardBodyChecks, CardBodyHunting } from '../../models/pf2-alt.card.model';
 import { CardBodyFluff, CardBodyText } from 'src/app/models/pf2.card.model';
 
 @Component({
@@ -33,6 +33,10 @@ export class PF2AltCardRenderer {
 			traitRowAmount: 0,
 
 			bodyFontSize: 52,
+
+			checkSize: 120,
+			checkMargin: 20,
+			checkWidth: 5,
 		},
 		colors: {
 			red: '#5d0000', // spell
@@ -294,6 +298,10 @@ export class PF2AltCardRenderer {
 				offset = this.renderBodyAbility(ctx, offset, bodyItem);
 			} else if (bodyItem instanceof CardBodyTitle) {
 				offset = this.renderBodyTitle(ctx, offset, bodyItem);
+			} else if (bodyItem instanceof CardBodyChecks) {
+				offset = this.renderBodyChecks(ctx, offset, bodyItem);
+			} else if (bodyItem instanceof CardBodyHunting) {
+				offset = this.renderBodyHunting(ctx, offset, bodyItem);
 			}
 		})
 
@@ -318,6 +326,8 @@ export class PF2AltCardRenderer {
 				height = this.renderBodyAbility(ctx, height, footerItem, false);
 			} else if (footerItem instanceof CardBodyTitle) {
 				height = this.renderBodyTitle(ctx, height, footerItem, false);
+			} else if (footerItem instanceof CardBodyChecks) {
+				height = this.renderBodyChecks(ctx, height, footerItem, false);
 			}
 		})
 
@@ -335,6 +345,8 @@ export class PF2AltCardRenderer {
 				offset = this.renderBodyAbility(ctx, offset, footerItem);
 			} else if (footerItem instanceof CardBodyTitle) {
 				offset = this.renderBodyTitle(ctx, offset, footerItem);
+			} else if (footerItem instanceof CardBodyChecks) {
+				offset = this.renderBodyChecks(ctx, offset, footerItem);
 			}
 		})
 
@@ -345,7 +357,7 @@ export class PF2AltCardRenderer {
 		const bodyFont = 'GoodPro-Italic';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
-		const bodyFontAlign = 'left';
+		const bodyFontAlign = 'center';
 
 		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
 		ctx.fillStyle = bodyFontColor;
@@ -357,9 +369,10 @@ export class PF2AltCardRenderer {
 				ctx,
 				text,
 				offset,
-				0,
+				(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
 				0,
 				draw,
+				true,
 			)
 
 			offset += this.config.size.bodyFontSize;
@@ -372,7 +385,7 @@ export class PF2AltCardRenderer {
 		const bodyFont = 'GoodPro';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
-		const bodyFontAlign = 'left';
+		const bodyFontAlign = 'center';
 
 		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
 		ctx.fillStyle = bodyFontColor;
@@ -384,9 +397,10 @@ export class PF2AltCardRenderer {
 				ctx,
 				text,
 				offset,
-				0,
+				(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
 				0,
 				draw,
+				true,
 			)
 
 			offset += this.config.size.bodyFontSize;
@@ -408,16 +422,60 @@ export class PF2AltCardRenderer {
 
 		offset = this.drawText(
 			ctx,
-			bodyItem.text,
+			bodyItem.text.toUpperCase(),
 			offset,
 			(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
 			0,
 			draw,
+			true,
 		)
 
 		offset += this.config.size.bodyFontSize;
 
 		return offset;
+	}
+
+	private renderBodyChecks(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyChecks, draw: boolean = true) {
+		// make squares for each check
+		ctx.fillStyle = '#000';
+		ctx.lineWidth = this.config.size.checkWidth;
+
+		// figure out how many checks fit on a line
+		const maxOnLine = Math.floor((this.config.size.width - this.config.size.textContainerOffset * 2 + this.config.size.checkMargin) / (this.config.size.checkSize + this.config.size.checkMargin));
+		const linesNeeded = Math.ceil(parseInt(bodyItem.checks) / maxOnLine);
+		const checksOnLine = Math.floor(parseInt(bodyItem.checks) / linesNeeded);
+		let remainder = parseInt(bodyItem.checks) % checksOnLine;
+
+		// draw the checks
+		for(let i = 0; i < linesNeeded; i++) {
+			let checksToDraw = checksOnLine
+			if(remainder > 0) {
+				checksToDraw++;
+				remainder--;
+			}
+
+			// draw check, centered
+			let lineOffset = (this.config.size.width - this.config.size.textContainerOffset * 2 - checksToDraw * this.config.size.checkSize - (checksToDraw - 1) * this.config.size.checkMargin) / 2;
+			for(let ii = 0; ii < checksToDraw; ii++) {
+				if(draw) {
+					ctx.strokeRect(
+						this.config.size.textContainerOffset + lineOffset,
+						offset,
+						this.config.size.checkSize,
+						this.config.size.checkSize,
+					);
+				}
+
+				lineOffset += this.config.size.checkSize + this.config.size.checkMargin;
+			}
+			
+			offset += this.config.size.checkSize + this.config.size.checkMargin;
+		}
+
+		offset -= this.config.size.checkMargin;
+		offset += this.config.size.bodyFontSize;
+
+		return offset
 	}
 
 	private renderBodyAbility(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyAbility, draw: boolean = true) {
@@ -550,7 +608,93 @@ export class PF2AltCardRenderer {
 		return offset;
 	}
 
-	private drawText(ctx: CanvasRenderingContext2D, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0, draw: boolean = true) {
+	private renderBodyHunting(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyHunting, draw: boolean = true) {
+		const bodyFont = 'GoodPro';
+		const bodyFontBold = 'GoodPro-Bold';
+		const bodyFontColor = '#000';
+		const bodyFontBaseline = 'top';
+		const bodyFontAlign = 'center';
+
+		const order = [
+			{key: 'cost', text: 'Cost'},
+			{key: 'crit_success', text: 'Critical Success'},
+			{key: 'success', text: 'Success'},
+			{key: 'failure', text: 'Failure'},
+			{key: 'crit_failure', text: 'Critical Failure'},
+		]
+
+		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
+		ctx.fillStyle = bodyFontColor;
+		ctx.textAlign = bodyFontAlign;
+		ctx.textBaseline = bodyFontBaseline;
+
+		order.forEach((item) => {
+			const value = bodyItem[item.key as keyof CardBodyHunting];
+			if(!value) { return; }
+
+			// If entire section is empty, skip
+			if(value.text == "" && value.basic == "" && value.special == "") { return; }
+
+			// Title of the section, centering
+			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontBold}`;
+
+			offset = this.drawText(
+				ctx,
+				item.text,
+				offset,
+				(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
+				0,
+				draw,
+				true,
+			)
+
+			// reset text
+			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
+
+			// if both are present, draw them next to each other
+			if(value.basic != "") {
+				offset = this.drawText(
+					ctx,
+					value.basic + " Basic Ingredients",
+					offset,
+					(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
+					0,
+					draw,
+					true,
+				)
+			}
+
+			if(value.special != "") {
+				offset = this.drawText(
+					ctx,
+					value.special + " Special Ingredients",
+					offset,
+					(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
+					0,
+					draw,
+					true,
+				)
+			}
+
+			if(value.text != "") {
+				offset = this.drawText(
+					ctx,
+					value.text,
+					offset,
+					(this.config.size.width - this.config.size.textContainerOffset * 2) / 2,
+					0,
+					draw,
+					true,
+				)
+			}
+
+			offset += this.config.size.bodyFontSize;
+		})
+
+		return offset
+	}
+
+	private drawText(ctx: CanvasRenderingContext2D, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0, draw: boolean = true, isCentered: boolean = false) {
 		let currentFont = "normal";
 		const bodyFont = 'GoodPro';
 		const bodyFontBold = 'GoodPro-Bold';
@@ -567,14 +711,14 @@ export class PF2AltCardRenderer {
 			let firstLine = true;
 
 			const lineOffset = ()=> { return horizontalOffset - (firstLine ? horizontalOffsetFirstLine : 0) }
-			const spaceWidth = ctx.measureText(' ').width;
+			const spaceWidth = ctx.measureText(' ').width / (isCentered ? 2 : 1);
 
 			words.forEach((word, index) => {
 				// if the word is too long to fit on the line, break it
-				const wordLength = ctx.measureText(word).width;
+				const wordLength = ctx.measureText(word).width / (isCentered ? 2 : 1);
 
 				if (wordLength + lineLength + (firstWordOfLine ? 0 : spaceWidth) > containerWidth - lineOffset() ) {
-					if(draw) { this.drawTextLineJustify(ctx, line, offset, this.config.size.textContainerOffset + lineOffset(), containerWidth - lineOffset()); }
+					if(draw) { this.drawTextLineJustify(ctx, line, offset, this.config.size.textContainerOffset + lineOffset(), (containerWidth - lineOffset()) * (isCentered ? 2 : 1)); }
 
 					line = [];
 					lineLength = 0;
@@ -613,6 +757,14 @@ export class PF2AltCardRenderer {
 		const extraWordSpace = width - lineLength;
 		const extraSpaceCharacters = Math.floor(extraWordSpace / spaceWidth);
 		const extraSpaceCharactersPerWord = Math.floor(extraSpaceCharacters / (wordCount - 1));
+
+		console.log({
+			words: words,
+			spaceWidth: spaceWidth,
+			extraWordSpace: extraWordSpace,
+			extraSpaceCharacters: extraSpaceCharacters,
+			extraSpaceCharactersPerWord: extraSpaceCharactersPerWord,
+		})
 
 		let remainingExtraSpaceCharacters = extraSpaceCharacters - extraSpaceCharactersPerWord * (wordCount - 1);
 		let lineText = '';
