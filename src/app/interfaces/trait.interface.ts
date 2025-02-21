@@ -11,31 +11,30 @@ export interface TraitInterface {
 export class TraitBase {
     public traitForm: FormGroup
 
-	protected drawText(ctx: CanvasRenderingContext2D, config: CardConfig, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0, draw: boolean = true) {
-		let currentFont = "normal";
-		const bodyFont = 'GoodPro';
-		const bodyFontBold = 'GoodPro-Bold';
-		const bodyFontAction = 'PF2-Action';
+	protected drawText(ctx: CanvasRenderingContext2D, config: CardConfig, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0, draw: boolean = true, isCentered: boolean = false) {
+		const containerWidth = (config.size.width - config.size.textContainerOffset * 2);
+		if(isCentered) {
+			horizontalOffset = containerWidth / 2 + horizontalOffset / 2;
+		}
 
-		const containerWidth = config.size.width - config.size.textContainerOffset * 2;
 		let paragraphs = text.split(/\r\n|\r|\n/);
 		paragraphs.forEach((paragraph, index) => {
 
 			let words = paragraph.split(' ');
-			let line:string[] = [];
+			let line: string[] = [];
 			let lineLength = 0;
 			let firstWordOfLine = true;
 			let firstLine = true;
 
 			const lineOffset = ()=> { return horizontalOffset - (firstLine ? horizontalOffsetFirstLine : 0) }
-			const spaceWidth = ctx.measureText(' ').width;
+			const spaceWidth = ctx.measureText(' ').width / (isCentered ? 2 : 1)
 
 			words.forEach((word, index) => {
 				// if the word is too long to fit on the line, break it
-				const wordLength = ctx.measureText(word).width;
+				const wordLength = ctx.measureText(word).width / (isCentered ? 2 : 1)
 
 				if (wordLength + lineLength + (firstWordOfLine ? 0 : spaceWidth) > containerWidth - lineOffset() ) {
-					if(draw) { this.drawTextLineJustify(ctx, line, offset, config.size.textContainerOffset + lineOffset(), containerWidth - lineOffset()); }
+					if(draw) { this.drawTextLineJustify(ctx, line, offset, config.size.textContainerOffset + lineOffset(), (containerWidth - lineOffset()) * (isCentered ? 2 : 1)); }
 
 					line = [];
 					lineLength = 0;
@@ -93,12 +92,14 @@ export class TraitBase {
 	}
 
 	public render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		const bodyFont = 'GoodPro';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
 		const bodyFontAlign = 'left';
 
+		ctx.font = `${config.size.titleFontSize}px ${bodyFont}`;
 		ctx.fillStyle = bodyFontColor;
-		ctx.textAlign = bodyFontAlign;
+		ctx.textAlign = config.settings.defaultTextAlignment ?? bodyFontAlign;
 		ctx.textBaseline = bodyFontBaseline;
 	}
 

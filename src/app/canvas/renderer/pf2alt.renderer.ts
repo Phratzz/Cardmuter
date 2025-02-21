@@ -40,6 +40,7 @@ export class PF2AltCardRenderer {
 				this.config.size.traitRowAmount = 4
 				break;
 		}
+		this.config.settings.defaultTextAlignment = 'center';
 
 		ctx.canvas.width = this.config.size.width;
 		ctx.canvas.height = this.config.size.height;

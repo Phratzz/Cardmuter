@@ -23,6 +23,8 @@ import { HeightenTrait } from './traits/heighten.trait.component';
 import { StaffTrait } from './traits/staff.trait.component';
 import { TitleTrait } from './traits/title.trait.component';
 import { CheckboxTrait } from './traits/checkbox.trait.component';
+import { HuntingTrait } from './traits/hunting.trait.component';
+import { CookingTrait } from './traits/cooking.trait.component';
 
 
 @NgModule({
@@ -43,6 +45,8 @@ import { CheckboxTrait } from './traits/checkbox.trait.component';
 		StaffTrait,
 		TitleTrait,
 		CheckboxTrait,
+		HuntingTrait,
+		CookingTrait,
 
 		BlockFlowComponent,
 		BlockRowComponent,

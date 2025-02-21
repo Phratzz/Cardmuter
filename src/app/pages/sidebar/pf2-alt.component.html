@@ -1,8 +1,11 @@
 
 <mat-button-toggle-group [formControl]="currentSampleControl" (change)="loadSampleData()" [hideSingleSelectionIndicator]="true">
 	<mat-button-toggle value="empty">Empty</mat-button-toggle>
-	<mat-button-toggle value="project">Project</mat-button-toggle>
+	<mat-button-toggle value="project 1">Project 1</mat-button-toggle>
+	<mat-button-toggle value="project 2">Project 2</mat-button-toggle>
 	<mat-button-toggle value="item">Item</mat-button-toggle>
+	<mat-button-toggle value="hunting">Hunting</mat-button-toggle>
+	<mat-button-toggle value="cooking">Cooking</mat-button-toggle>
 </mat-button-toggle-group>
 
 <form [formGroup]="cardForm" (ngSubmit)="onFormSubmit()">

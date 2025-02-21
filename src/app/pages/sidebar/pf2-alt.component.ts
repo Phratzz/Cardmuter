@@ -14,6 +14,9 @@ import { ComponentLoaderService } from 'app/services/componentLoader.service';
 import { ReplaySubject } from 'rxjs';
 import { TraitInterface } from 'app/interfaces/trait.interface';
 import { TitleTrait } from 'app/traits/title.trait.component';
+import { CheckboxTrait } from 'app/traits/checkbox.trait.component';
+import { HuntingTrait } from 'app/traits/hunting.trait.component';
+import { CookingTrait } from 'app/traits/cooking.trait.component';
 
 @Component({
 	selector: 'app-sidebar-pf2-alt',
@@ -39,12 +42,14 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 		this.formLayout.body = [
 			TextTrait,
 			FluffTrait,
-			AbilityTrait,
-			SaveTrait,
-			AdvancedTrait,
+			//AbilityTrait,
+			//SaveTrait,
+			//AdvancedTrait,
 			//HeightenTrait,
-			StaffTrait,
-			TitleTrait,
+			//StaffTrait,
+			//TitleTrait,
+			HuntingTrait,
+			CookingTrait,
 		]
 		this.formLayout.footer = [
 			TextTrait,
@@ -55,17 +60,18 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 			HeightenTrait,
 			//StaffTrait,
 			TitleTrait,
+			CheckboxTrait,
 		]
 		
-		this.loadSampleData()
-		this.onFormSubmit()
+		this.loadSampleData(true)
 	}
 
 	ngAfterViewInit() {
 		this.traitSearchField.valueChanges
-		  .subscribe(() => {
-			this.filterTraits();
-		  });
+			.subscribe(() => {
+				this.filterTraits();
+			});
+		this.loadSampleData()
 	}
 
 	public traits = [
@@ -435,12 +441,21 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 		this.onFormSubmit()
 	}
 
-	loadSampleData() {
-		const sampleType = this.currentSampleControl.value
-		this.currentSampleControl.setValue('')
+	loadSampleData(initalLoad: boolean = false) {
+		let sampleType = this.currentSampleControl.value
+
+		if(initalLoad) {
+			sampleType = "empty"
+		} else {
+			this.currentSampleControl.setValue('')
+		}
+
+		// remove dynamic components
+		this.bodyContentContainer?.clear()
+		this.footerContentContainer?.clear()
 
 		switch (sampleType) {
-			case 'project':
+			case 'project 1':
 				this.cardForm = this.fb.group({
 					base: this.fb.group({
 						name: this.fb.control('On the subject of Oozes'),
@@ -468,6 +483,49 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 				// Footer
 				this.addComponent('footer', TitleTrait, {
 					text: 'Occultism — DC 16'
+				})
+				this.addComponent('footer', CheckboxTrait, {
+					checks: '6'
+				})
+				// End Footer
+				break
+			case 'project 2':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Staff of Tricky Minds'),
+						size: this.fb.control('normal'),
+						color: this.fb.control('yellow'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
+				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'An item imagined by Cruxie, a staff to help her on her journey, this staff should be able perform mental tricks like its owner'
+				})
+				this.addComponent('body', FluffTrait, {
+					text: 'Due to her kitsune heritage, the staff should have a small hook near the end to hang where a foxfire lantern can be hung'
+				})
+				// End Body
+
+				// Footer
+				this.addComponent('footer', TitleTrait, {
+					text: 'Requirements'
+				})
+				this.addComponent('footer', TextTrait, {
+					text: '• An ingredient to create the staff from, must have the Mental trait\r\n• A casting of: Infectious Enthusiasm\r\n• A name for the staff'
+				})
+				this.addComponent('footer', TitleTrait, {
+					text: 'Crafting — DC 16'
+				})
+				this.addComponent('footer', CheckboxTrait, {
+					checks: '10'
 				})
 				// End Footer
 				break
@@ -501,6 +559,89 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 				// Footer
 				this.addComponent('footer', TitleTrait, {
 					text: '10 GP'
+				})
+				// End Footer
+
+				break
+			case 'hunting':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Rabbits'),
+						size: this.fb.control('small'),
+						color: this.fb.control('green'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
+				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'During your hunt you come across a small flock of rabbits, or similar small game.'
+				})
+				this.addComponent('body', HuntingTrait, {
+					crit_success: {
+						basic: "16",
+					},
+					success: {
+						basic: "2d8",
+					},
+					crit_failure: {
+						text: "You become fatigued",
+					},
+				})
+				// End Body
+
+				// Footer
+				this.addComponent('footer', TitleTrait, {
+					text: 'Survival vs DC 15'
+				})
+				// End Footer
+
+				break
+			case 'cooking':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Hearty Meal'),
+						size: this.fb.control('small'),
+						color: this.fb.control('yellow'),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
+				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'During your hunt you come across a small flock of rabbits, or similar small game.'
+				})
+				this.addComponent('body', HuntingTrait, {
+					cost: {
+						basic: "4",
+					},
+					crit_success: {
+						text: "You gain a +1 status bonus to the next 3 saving throws you attempt within 24 hours",
+					},
+					success: {
+						text: "You gain a +1 status bonus to the next saving throw you attempt within 24 hours",
+					},
+					crit_failure: {
+						text: "You suffer a -1 status penalty to initiative checks until you rest and begin your daily preperations",
+					},
+				})
+				// End Body
+
+				// Footer
+				this.addComponent('footer', TitleTrait, {
+					text: 'Survival vs DC 15'
 				})
 				// End Footer
 

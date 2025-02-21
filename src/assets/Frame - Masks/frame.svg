@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<svg viewBox="0 0 1500 2100" width="1500px" height="2100px" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;" xmlns="http://www.w3.org/2000/svg">
-  <g id="Masks">
-    <path id="Frame" d="M 105 200 L 105 260 L 30 260 L 30 56 C 30 42.202 41.202 31 55 31 L 1445 31 C 1458.8 31 1470 42.202 1470 56 L 1470 290 L 1395 290 L 1395 200 L 1464.14 131 L 1397.07 63.929 C 1395.2 62.054 1392.65 61 1390 61 L 110 61 C 107.348 61 104.804 62.054 102.929 63.929 L 35.858 131 L 105 200 Z M 52.929 1903.93 L 30 1886 L 30 260 L 105 260 L 105 1852.34 C 104.25 1852.77 103.552 1853.31 102.929 1853.93 L 52.929 1903.93 Z M 1395 290 L 1470 290 L 1470 1881 L 1447.07 1903.93 L 1397.07 1853.93 C 1396.45 1853.31 1395.75 1852.77 1395 1852.34 L 1395 290 Z" style="fill: rgb(0, 0, 0); transform-origin: 0px 1px;"/>
-  </g>
-</svg>

@@ -33,6 +33,14 @@ export class CardConfig {
 		traitRowAmount: 3,
 
 		bodyFontSize: 52,
+
+		checkSize: 120,
+		checkMargin: 20,
+		checkWidth: 5,
+	}
+
+	public settings = {
+		defaultTextAlignment: <CanvasTextAlign>'left',
 	}
 
     constructor(

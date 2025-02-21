@@ -28,6 +28,7 @@ export class FluffTrait extends TraitBase implements TraitInterface {
 			0,
 			0,
 			draw,
+			config.settings.defaultTextAlignment === 'center',
 		)
 
 		offset += config.size.bodyFontSize;

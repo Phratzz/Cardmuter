@@ -18,7 +18,7 @@ export class TitleTrait extends TraitBase implements TraitInterface {
 		super.render(ctx, config, offset, draw);
 
 		const bodyFont = 'GoodPro-CondBold';
-		ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;
+		ctx.font = `${config.size.titleFontSize}px ${bodyFont}`;
 		
 		const bodyFontAlignCenter = 'center';
 		ctx.textAlign = bodyFontAlignCenter;
@@ -26,11 +26,12 @@ export class TitleTrait extends TraitBase implements TraitInterface {
 		offset = this.drawText(
 			ctx,
 			config,
-			this.traitForm.get('text')?.value ?? '',
+			this.traitForm.get('text')?.value?.toUpperCase() ?? '',
 			offset,
-			(config.size.width - config.size.textContainerOffset * 2) / 2,
+			0,
 			0,
 			draw,
+			true,
 		)
 
 		offset += config.size.bodyFontSize;

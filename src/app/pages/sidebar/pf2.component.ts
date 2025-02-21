@@ -54,7 +54,6 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 			//StaffTrait,
 		]
 
-		console.log("load initial")
 		this.loadSampleData(true)
 	}
 
@@ -64,7 +63,6 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				this.filterTraits();
 			});
 
-		console.log("load new")
 		this.loadSampleData()
 	}
 
@@ -650,6 +648,102 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 							this.fb.group({
 								name: this.fb.control('Bulk'),
 								value: this.fb.control('L'),
+								action: this.fb.control(''),
+							}),
+						]),
+					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
+				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'This parrying dagger for features a robust guard in the form of a dragons head, upon closer inspection the head shares features with that of o bronze dragon.'
+				})
+				this.addComponent('body', AbilityTrait, {
+					activate: 'Strike',
+					activateAction: 'r',
+					trigger: 'A creature with the Dragon trait critically fails a strike against you',
+					requirement: '',
+					frequency: '',
+					effect: 'You take advantage of an opening from your enemy\'s fumbled attack. You can make a melee Strike against the triggering foe.'
+				})
+				this.addComponent('body', AbilityTrait, {
+					activate: 'Strike',
+					activateAction: 'r',
+					trigger: 'A creature with the Dragon trait fails a strike against you',
+					requirement: 'You have the Opportune Riposte feat',
+					frequency: '',
+					effect: 'You take advantage of an opening from your enemy\'s fumbled attack. You can make a melee Strike against the triggering foe.'
+				})
+				// End Body
+				break
+			case 'armor':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Oaken Weave'),
+						type: this.fb.control('Item'),
+						color: this.fb.control('blue'),
+						level: this.fb.control('2'),
+						punctureHole: this.fb.control(false),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+						new CardTrait('Abjuration'),
+						new CardTrait('Magical'),
+						new CardTrait('Plant'),
+
+						new CardTrait('Laminar', 'weapon'),
+					]),
+					header: this.fb.array([
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('AC Bonus'),
+								value: this.fb.control('+1'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Dex Cap'),
+								value: this.fb.control('+4'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Check Penalty'),
+								value: this.fb.control('-1'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Speed Penalty'),
+								value: this.fb.control('—'),
+								action: this.fb.control(''),
+							}),
+						]),
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('Strength'),
+								value: this.fb.control('10'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Category'),
+								value: this.fb.control('Light'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Group'),
+								value: this.fb.control('wood'),
+								action: this.fb.control(''),
+							}),
+						]),
+						this.fb.array([
+							this.fb.group({
+								name: this.fb.control('Price'),
+								value: this.fb.control('10gp'),
+								action: this.fb.control(''),
+							}),
+							this.fb.group({
+								name: this.fb.control('Bulk'),
+								value: this.fb.control('1'),
 								action: this.fb.control(''),
 							}),
 						]),
