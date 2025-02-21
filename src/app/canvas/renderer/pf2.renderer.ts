@@ -1,53 +1,12 @@
 import { Component, ElementRef } from '@angular/core';
 import { PF2Card } from '../../models/pf2.card.model';
-import { CardBodyText } from '../../traits/text.trait.component';
-import { CardBodyFluff } from '../../traits/fluff.trait.component';
-import { CardBodyAbility } from 'app/traits/ability.trait.component';
-import { CardBodySave } from 'app/traits/save.trait.component';
-import { CardBodyAdvanced } from 'app/traits/advanced.trait.component';
-import { CardBodyHeighten, CardBodyHeightenLine } from 'app/traits/heighten.trait.component';
-import { CardBodyStaff, CardBodyStaffLevel } from 'app/traits/staff.trait.component';
+import { CardConfig } from 'app/models/config.card.model';
 
 @Component({
     template: ''
   })
 export class PF2CardRenderer {
-	config = {
-		size: {
-			width: 1748,
-			height: 2480,
-			
-			textMargin: 10,
-
-			titleFontSize: 90,
-			titleFontOffset: 70,
-			titlePunctureOffset: 50,
-			textContainerOffset: 90,
-			lineWidth: 5,
-
-			traitAccentWidth: 12,
-			traitAccentHeight: 6,
-			traitColorWidth: 12,
-			traitColorHeight: 6,
-			traitFontSize: 70,
-			traitRowAmount: 3,
-
-			bodyFontSize: 52,
-		},
-		colors: {
-			red: '#5d0000', // spell
-			blue: '#00005d', // item
-			green: '#005d00', //
-
-			purple: '#5d005d', // formula
-			yellow: '#5d5d00', //
-			cyan: '#005d5d', // 
-			
-			grey: '#5d5d5d', // resource
-
-			accent: '#dac68a', //
-		},
-	};
+	config = new CardConfig(1748, 2480)
 
     constructor(
         public data: PF2Card,
@@ -276,23 +235,7 @@ export class PF2CardRenderer {
 
 	private renderBody(ctx: CanvasRenderingContext2D, offset: number) {
 		this.data.body.forEach((bodyItem, index) => {
-			switch(true) {
-				case bodyItem instanceof CardBodyFluff:
-					offset = this.renderBodyFluff(ctx, offset, bodyItem);
-					break;
-				case bodyItem instanceof CardBodyText:
-					offset = this.renderBodyText(ctx, offset, bodyItem);
-					break;
-				case bodyItem instanceof CardBodyAbility:
-				case bodyItem instanceof CardBodySave:
-				case bodyItem instanceof CardBodyAdvanced:
-				case bodyItem instanceof CardBodyHeighten:
-				case bodyItem instanceof CardBodyStaff:
-					offset = this.renderBodyAbility(ctx, offset, bodyItem);
-					break;
-				default:
-					console.error('Unknown body item', bodyItem);
-			}
+			offset = bodyItem.render(ctx, this.config, offset)
 		})
 
 		return offset;
@@ -308,23 +251,7 @@ export class PF2CardRenderer {
 		// calculate total height of footer
 		let height: number = 0
 		this.data.footer.forEach((footerItem, index) => {
-			switch(true) {
-				case footerItem instanceof CardBodyFluff:
-					height = this.renderBodyFluff(ctx, height, footerItem, false);
-					break;
-				case footerItem instanceof CardBodyText:
-					height = this.renderBodyText(ctx, height, footerItem, false);
-					break;
-				case footerItem instanceof CardBodyAbility:
-				case footerItem instanceof CardBodySave:
-				case footerItem instanceof CardBodyAdvanced:
-				case footerItem instanceof CardBodyHeighten:
-				case footerItem instanceof CardBodyStaff:
-					height = this.renderBodyAbility(ctx, height, footerItem, false);
-					break;
-				default:
-					console.error('Unknown body item', footerItem);
-			}
+			height = footerItem.render(ctx, this.config, height, false);
 		})
 
 		// Draw Line on top of footer
@@ -333,291 +260,10 @@ export class PF2CardRenderer {
 		// Draw footer
 		let offset: number = this.config.size.height - height - this.config.size.titleFontOffset + this.config.size.textMargin;
 		this.data.footer.forEach((footerItem, index) => {
-			switch(true) {
-				case footerItem instanceof CardBodyFluff:
-					offset = this.renderBodyFluff(ctx, offset, footerItem);
-					break;
-				case footerItem instanceof CardBodyText:
-					offset = this.renderBodyText(ctx, offset, footerItem);
-					break;
-				case footerItem instanceof CardBodyAbility:
-				case footerItem instanceof CardBodySave:
-				case footerItem instanceof CardBodyAdvanced:
-				case footerItem instanceof CardBodyHeighten:
-				case footerItem instanceof CardBodyStaff:
-					offset = this.renderBodyAbility(ctx, offset, footerItem);
-					break;
-				default:
-					console.error('Unknown body item', footerItem);
-			}
+			offset = footerItem.render(ctx, this.config, offset);
 		})
 
 		return offset;
-	}
-
-	private renderBodyFluff(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyFluff, draw: boolean = true) {
-		const bodyFont = 'GoodPro-Italic';
-		const bodyFontColor = '#000';
-		const bodyFontBaseline = 'top';
-		const bodyFontAlign = 'left';
-
-		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-		ctx.fillStyle = bodyFontColor;
-		ctx.textAlign = bodyFontAlign;
-		ctx.textBaseline = bodyFontBaseline;
-
-		bodyItem.text.forEach((text, index) => {
-			offset = this.drawText(
-				ctx,
-				text,
-				offset,
-				0,
-				0,
-				draw,
-			)
-
-			offset += this.config.size.bodyFontSize;
-		})
-
-		return offset;
-	}
-
-	private renderBodyText(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyText, draw: boolean = true) {
-		const bodyFont = 'GoodPro';
-		const bodyFontColor = '#000';
-		const bodyFontBaseline = 'top';
-		const bodyFontAlign = 'left';
-
-		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-		ctx.fillStyle = bodyFontColor;
-		ctx.textAlign = bodyFontAlign;
-		ctx.textBaseline = bodyFontBaseline;
-
-		bodyItem.text.forEach((text, index) => {
-			offset = this.drawText(
-				ctx,
-				text,
-				offset,
-				0,
-				0,
-				draw,
-			)
-
-			offset += this.config.size.bodyFontSize;
-		})
-
-		return offset;
-	}
-
-	private renderBodyAbility(ctx: CanvasRenderingContext2D, offset: number, bodyItem: any, draw: boolean = true) {
-		const bodyFontColor = '#000';
-		const bodyFontBaseline = 'top';
-		const bodyFontAlign = 'left';
-
-		ctx.fillStyle = bodyFontColor;
-		ctx.textAlign = bodyFontAlign;
-		ctx.textBaseline = bodyFontBaseline;
-
-		const writingOrder = [
-			'activate',
-			'trigger',
-			'requirement',
-			'frequency',
-			'effect',
-
-			'crit_success',
-			'success',
-			'failure',
-			'crit_failure',
-
-			'heightened',
-			'staff',
-		]
-		writingOrder.forEach((key) => {
-			let value = bodyItem[key];
-			if(!value || (Array.isArray(value) && value.length === 0)) { return; }
-
-			if(key === 'heightened' && Array.isArray(value)) {
-				value.forEach((heightened) => {
-					if(heightened instanceof CardBodyHeightenLine) {
-						offset = this.renderBodyAbilityLine(ctx, offset, `Heightened (${heightened.name})`, heightened.value, bodyItem, draw);
-					}
-				})
-				return offset + this.config.size.bodyFontSize;
-			}
-
-			if(key === 'staff' && Array.isArray(value)) {
-				value.forEach((level) => {
-					if(level instanceof CardBodyStaffLevel) {
-						const spelltext = level.spells.reduce((text, spell) => {
-							if(text.length > 0) {
-								text += ', '
-							}
-
-							text += `${spell.name}`
-							if(spell.notes) {
-								text += ` (${spell.notes})`
-							}
-
-							return text
-						}, '')
-
-						offset = this.renderBodyAbilityLine(ctx, offset, level.name, spelltext, bodyItem, draw);
-					}
-				})
-				return offset + this.config.size.bodyFontSize;
-			}
-			
-			// if the value is an array, render it
-			if(Array.isArray(value)) {
-				//value = value.join(' ');
-				let isFirstLine = true;
-				value.forEach((valueItem, index) => {
-					if(typeof valueItem === 'string') {
-						if(isFirstLine) {
-							offset = this.renderBodyAbilityLine(ctx, offset, key, valueItem, bodyItem, draw);
-							isFirstLine = false;
-						} else {
-							offset = this.drawText( ctx, valueItem, offset, 60, 0, draw,
-							)
-						}
-
-						// if not the last line, add a line break
-						if(Array.isArray(value) && index < value.length - 1) {
-							offset += this.config.size.bodyFontSize;
-						}
-					}
-				})
-			}
-
-			// if the value is a string, render it
-			if(typeof value === 'string') {
-				offset = this.renderBodyAbilityLine(ctx, offset, key, value, bodyItem, draw);
-			}
-
-			return offset + this.config.size.bodyFontSize;
-		})
-
-		return offset + this.config.size.bodyFontSize;
-	}
-
-	private renderBodyAbilityLine(ctx: CanvasRenderingContext2D, offset: number, key: string, value: string, bodyItem: any, draw: boolean = true) {
-		const bodyFont = 'GoodPro';
-		const bodyFontBold = 'GoodPro-Bold';
-		const bodyFontAction = 'PF2-Action';
-		let textOffset = 0;
-
-		// write exploded key in bold
-		const keyTexts = key.split('_');
-		keyTexts.forEach((keyText) => {
-			const keySingle = `${keyText[0].toUpperCase()}${keyText.slice(1)}`;
-			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontBold}`;
-			if(draw) { ctx.fillText(keySingle, this.config.size.textContainerOffset + textOffset, offset); }
-			textOffset += ctx.measureText(keySingle).width + ctx.measureText(' ').width;
-		})
-
-		// write spacing
-		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-		if(draw) { ctx.fillText("- ", this.config.size.textContainerOffset + textOffset, offset); }
-		textOffset += ctx.measureText("- ").width;
-
-		// if action, check if there is an action
-		if(key === 'activate' && bodyItem.activateAction) {
-			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFontAction}`;
-			if(draw) { ctx.fillText(bodyItem.activateAction, this.config.size.textContainerOffset + textOffset, offset); }
-			textOffset += ctx.measureText(bodyItem.activateAction).width;
-
-			// write spacing
-			ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-			if(draw) { ctx.fillText(" ", this.config.size.textContainerOffset + textOffset, offset); }
-			textOffset += ctx.measureText(" ").width;
-		}
-
-		ctx.font = `${this.config.size.bodyFontSize}px ${bodyFont}`;
-		offset = this.drawText( ctx, value, offset, 60, 60 - textOffset, draw, )
-
-		return offset;
-	}
-
-	private drawText(ctx: CanvasRenderingContext2D, text: string, offset: number, horizontalOffset: number, horizontalOffsetFirstLine: number = 0, draw: boolean = true) {
-		let currentFont = "normal";
-		const bodyFont = 'GoodPro';
-		const bodyFontBold = 'GoodPro-Bold';
-		const bodyFontAction = 'PF2-Action';
-
-		const containerWidth = this.config.size.width - this.config.size.textContainerOffset * 2;
-		let paragraphs = text.split(/\r\n|\r|\n/);
-		paragraphs.forEach((paragraph, index) => {
-
-			let words = paragraph.split(' ');
-			let line:string[] = [];
-			let lineLength = 0;
-			let firstWordOfLine = true;
-			let firstLine = true;
-
-			const lineOffset = ()=> { return horizontalOffset - (firstLine ? horizontalOffsetFirstLine : 0) }
-			const spaceWidth = ctx.measureText(' ').width;
-
-			words.forEach((word, index) => {
-				// if the word is too long to fit on the line, break it
-				const wordLength = ctx.measureText(word).width;
-
-				if (wordLength + lineLength + (firstWordOfLine ? 0 : spaceWidth) > containerWidth - lineOffset() ) {
-					if(draw) { this.drawTextLineJustify(ctx, line, offset, this.config.size.textContainerOffset + lineOffset(), containerWidth - lineOffset()); }
-
-					line = [];
-					lineLength = 0;
-					firstWordOfLine = true;
-					firstLine = false;
-
-					offset += this.config.size.bodyFontSize;
-				}
-
-				// add the word to the line
-				line.push(word);
-				lineLength += wordLength;
-
-				if(!firstWordOfLine) {
-					lineLength += spaceWidth;
-				}
-				firstWordOfLine = false;
-			})
-
-			// draw the last line, not justified
-			if(draw) { ctx.fillText(line.join(' '), this.config.size.textContainerOffset + lineOffset(), offset); }
-			offset += this.config.size.bodyFontSize;
-		})
-
-		return offset;
-	}
-
-	private drawTextLineJustify(ctx: CanvasRenderingContext2D, words: string[], offset: number, horizontalOffset: number, width: number) {
-		let lineLength = 0;
-		const wordCount = words.length;
-		words.forEach((word, index) => {
-			lineLength += ctx.measureText(word).width;
-		})
-
-		const spaceWidth = ctx.measureText(' ').width;
-		const extraWordSpace = width - lineLength;
-		const extraSpaceCharacters = Math.floor(extraWordSpace / spaceWidth);
-		const extraSpaceCharactersPerWord = Math.floor(extraSpaceCharacters / (wordCount - 1));
-
-		let remainingExtraSpaceCharacters = extraSpaceCharacters - extraSpaceCharactersPerWord * (wordCount - 1);
-		let lineText = '';
-		words.forEach((word, index) => {
-			lineText += word;
-			if(index < wordCount - 1) {
-				lineText += ' '.repeat(extraSpaceCharactersPerWord);
-
-				if(remainingExtraSpaceCharacters > 0) {
-					lineText += ' ';
-					remainingExtraSpaceCharacters--;
-				}
-			}
-		})
-
-		ctx.fillText(lineText, horizontalOffset, offset);
 	}
 
 	private drawRoundedRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number, radius: number) {

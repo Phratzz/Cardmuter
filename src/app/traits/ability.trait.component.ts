@@ -1,14 +1,15 @@
 import { FormControl, FormGroup } from "@angular/forms";
-import { TraitInterface } from "../interfaces/trait.interface"
+import { TraitBase, TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
+import { CardConfig } from "app/models/config.card.model";
 
 @Component({
 	templateUrl: './ability.trait.component.html',
 })
-export class AbilityTrait implements TraitInterface {
+export class AbilityTrait extends TraitBase implements TraitInterface {
     static traitName = "ability"
 
-	public traitForm = new FormGroup({
+	override traitForm = new FormGroup({
 		type: new FormControl(AbilityTrait.traitName),
 		activate: new FormControl(''),
 		activateAction: new FormControl(''),
@@ -17,30 +18,32 @@ export class AbilityTrait implements TraitInterface {
 		requirement: new FormControl(''),
 		trigger: new FormControl(''),
 	});
+		
+	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		super.render(ctx, config, offset, draw);
 
-	constructor() {}
+		const writingOrder = [
+			'activate',
+			'trigger',
+			'requirement',
+			'frequency',
+			'effect',
 
-    public formatForFormSubmit(): CardBodyAbility {
-        return new CardBodyAbility(
-			(this.traitForm.get('activate')?.value) as string,
-			(this.traitForm.get('activateAction')?.value) as string,
-			(this.traitForm.get('effect')?.value) as string,
-			(this.traitForm.get('frequency')?.value) as string,
-			(this.traitForm.get('requirement')?.value) as string,
-			(this.traitForm.get('trigger')?.value) as string,
-		)
-    }
+			'crit_success',
+			'success',
+			'failure',
+			'crit_failure',
+		]
+		writingOrder.forEach((key) => {
+			let value = this.traitForm.get(key)?.value;
+			if(!value || (Array.isArray(value) && value.length === 0)) { return; }
 
-	public destroy() {}
-}
+			offset = this.renderLine(ctx, config, offset, key, value, draw);
 
-export class CardBodyAbility {
-    constructor(
-		public activate: string,
-		public activateAction: string,
-		public effect: string | string[],
-		public frequency: string,
-		public requirement: string,
-		public trigger: string,
-    ) {}
+			return offset + config.size.bodyFontSize;
+		})
+
+		offset += config.size.bodyFontSize;
+		return offset;
+	}
 }

@@ -1,35 +1,36 @@
 import { FormControl, FormGroup } from "@angular/forms";
-import { TraitInterface } from "../interfaces/trait.interface"
+import { TraitBase, TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
+import { CardConfig } from "app/models/config.card.model";
 
 @Component({
 	templateUrl: './fluff.trait.component.html',
 })
-export class FluffTrait implements TraitInterface {
+export class FluffTrait extends TraitBase implements TraitInterface {
     static traitName = "fluff"
 	
-	public traitForm = new FormGroup({
+	override traitForm = new FormGroup({
 		type: new FormControl(FluffTrait.traitName),
 		text: new FormControl(''),
 	});
 
-	constructor() {}
+	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		super.render(ctx, config, offset, draw);
 
-    public formatForFormSubmit(): CardBodyFluff {
-        return new CardBodyFluff(
-            (this.traitForm.get('text')?.value) as string
+		const bodyFont = 'GoodPro-Italic';
+		ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;
+
+		offset = this.drawText(
+			ctx,
+			config,
+			this.traitForm.get('text')?.value ?? '',
+			offset,
+			0,
+			0,
+			draw,
 		)
-    }
 
-	public destroy() {}
-}
-
-export class CardBodyFluff {
-    text: string[];
-
-    constructor(
-        ...text: string[]
-    ) {
-        this.text = text;
-    }
+		offset += config.size.bodyFontSize;
+		return offset;
+	}
 }

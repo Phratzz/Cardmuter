@@ -1,31 +1,39 @@
 import { FormControl, FormGroup } from "@angular/forms";
-import { TraitInterface } from "../interfaces/trait.interface"
+import { TraitBase, TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
+import { CardConfig } from "app/models/config.card.model";
 
 @Component({
 	templateUrl: './title.trait.component.html',
 })
-export class TitleTrait implements TraitInterface {
+export class TitleTrait extends TraitBase implements TraitInterface {
     static traitName = "title"
 
-	public traitForm = new FormGroup({
+	override traitForm = new FormGroup({
 		type: new FormControl(TitleTrait.traitName),
 		text: new FormControl(''),
 	});
 
-	constructor() {}
+	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		super.render(ctx, config, offset, draw);
 
-    public formatForFormSubmit(): CardBodyTitle {
-        return new CardBodyTitle(
-            (this.traitForm.get('text')?.value) as string
+		const bodyFont = 'GoodPro-CondBold';
+		ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;
+		
+		const bodyFontAlignCenter = 'center';
+		ctx.textAlign = bodyFontAlignCenter;
+
+		offset = this.drawText(
+			ctx,
+			config,
+			this.traitForm.get('text')?.value ?? '',
+			offset,
+			(config.size.width - config.size.textContainerOffset * 2) / 2,
+			0,
+			draw,
 		)
-    }
 
-	public destroy() {}
-}
-
-export class CardBodyTitle {
-    constructor(
-        public text: string
-    ) {}
+		offset += config.size.bodyFontSize;
+		return offset;
+	}
 }

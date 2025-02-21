@@ -1,14 +1,15 @@
 import { FormArray, FormControl, FormGroup } from "@angular/forms";
-import { TraitInterface } from "../interfaces/trait.interface"
+import { TraitBase, TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
+import { CardConfig } from "app/models/config.card.model";
 
 @Component({
 	templateUrl: './staff.trait.component.html',
 })
-export class StaffTrait implements TraitInterface {
+export class StaffTrait extends TraitBase implements TraitInterface {
     static traitName = "staff"
 
-	public traitForm = new FormGroup({
+	override traitForm = new FormGroup({
 		type: new FormControl(StaffTrait.traitName),
 		levels: new FormArray([
 			new FormGroup({
@@ -23,34 +24,7 @@ export class StaffTrait implements TraitInterface {
 		]),
 	});
 
-	constructor() {}
-
-    public formatForFormSubmit(): CardBodyStaff {
-        return new CardBodyStaff(
-			(this.traitForm.get('levels') as FormArray).value.map((value: CardBodyStaffLevel) => {
-				return new CardBodyStaffLevel(
-					value.name,
-					value.spells.map((spell: CardBodyStaffLevelSpell) => {
-						return new CardBodyStaffLevelSpell(
-							spell.name,
-							spell.notes,
-						)
-					})
-				)
-			})
-		)
-    }
-
-	public destroy() {}
-	
-	
-	removeFormArray(position: string, index: number) {
-		(<FormArray>this.traitForm.get(position)).removeAt(index)
-	}
-	getFormArray(position: string): FormArray {
-		return this.traitForm.get(position) as FormArray
-	}
-	addFormArray(position: string, type: string) {
+	override addFormArray(position: string, type: string) {
 		switch (type) {
 			case 'level':
 				(<FormArray>this.traitForm.get(position)).push(
@@ -75,22 +49,28 @@ export class StaffTrait implements TraitInterface {
 				break;
 		}
 	}
-}
 
-export class CardBodyStaff {
-    constructor(
-		public staff: Array<CardBodyStaffLevel>,
-    ) {}
-}
-export class CardBodyStaffLevel {
-    constructor(
-		public name: string,
-		public spells: Array<CardBodyStaffLevelSpell>,
-    ) {}
-}
-export class CardBodyStaffLevelSpell {
-    constructor(
-		public name: string,
-		public notes: string,
-    ) {}
+	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		super.render(ctx, config, offset, draw);
+
+		this.traitForm.get('levels')?.value.forEach((level) => {
+			const spelltext = level.spells.reduce((text, spell) => {
+				if(text.length > 0) {
+					text += ', '
+				}
+
+				text += `${spell.name}`
+				if(spell.notes) {
+					text += ` (${spell.notes})`
+				}
+
+				return text
+			}, '')
+
+			offset = this.renderLine(ctx, config, offset, level.name ?? '', spelltext, draw);
+		})
+
+		offset += config.size.bodyFontSize;
+		return offset;
+	}
 }

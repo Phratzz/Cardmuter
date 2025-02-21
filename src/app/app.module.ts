@@ -22,6 +22,7 @@ import { AdvancedTrait } from './traits/advanced.trait.component';
 import { HeightenTrait } from './traits/heighten.trait.component';
 import { StaffTrait } from './traits/staff.trait.component';
 import { TitleTrait } from './traits/title.trait.component';
+import { CheckboxTrait } from './traits/checkbox.trait.component';
 
 
 @NgModule({
@@ -41,6 +42,7 @@ import { TitleTrait } from './traits/title.trait.component';
 		HeightenTrait,
 		StaffTrait,
 		TitleTrait,
+		CheckboxTrait,
 
 		BlockFlowComponent,
 		BlockRowComponent,

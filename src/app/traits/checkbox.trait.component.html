@@ -1,0 +1,18 @@
+<mat-card [formGroup]="traitForm">
+    <mat-card-header>
+        <mat-card-title>Title</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+        <block-row>
+            <mat-form-field appearance="outline" floatLabel="always" color="accent">
+                <mat-label>Title</mat-label>
+                <input type="text" formControlName="text" matInput>
+            </mat-form-field>
+        </block-row>
+
+        <block-row>
+            <button type="button" mat-stroked-button (click)="destroy()">Remove Title</button>
+        </block-row>
+    </mat-card-content>
+</mat-card>

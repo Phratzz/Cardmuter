@@ -1,40 +1,41 @@
 import { FormControl, FormGroup } from "@angular/forms";
-import { TraitInterface } from "../interfaces/trait.interface"
+import { TraitBase, TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
+import { CardConfig } from "app/models/config.card.model";
 
 @Component({
 	templateUrl: './save.trait.component.html',
 })
-export class SaveTrait implements TraitInterface {
+export class SaveTrait extends TraitBase implements TraitInterface {
     static traitName = "save"
 
-	public traitForm = new FormGroup({
+	override traitForm = new FormGroup({
 		type: new FormControl(SaveTrait.traitName),
 		crit_success: new FormControl(''),
 		success: new FormControl(''),
 		failure: new FormControl(''),
 		crit_failure: new FormControl(''),
 	});
+		
+	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		super.render(ctx, config, offset, draw);
 
-	constructor() {}
+		const writingOrder = [
+			'crit_success',
+			'success',
+			'failure',
+			'crit_failure',
+		]
+		writingOrder.forEach((key) => {
+			let value = this.traitForm.get(key)?.value;
+			if(!value || (Array.isArray(value) && value.length === 0)) { return; }
 
-    public formatForFormSubmit(): CardBodySave {
-        return new CardBodySave(
-			(this.traitForm.get('crit_success')?.value) as string,
-			(this.traitForm.get('success')?.value) as string,
-			(this.traitForm.get('failure')?.value) as string,
-			(this.traitForm.get('crit_failure')?.value) as string
-		)
-    }
+			offset = this.renderLine(ctx, config, offset, key, value, draw);
 
-	public destroy() {}
-}
+			return offset + config.size.bodyFontSize;
+		})
 
-export class CardBodySave {
-    constructor(
-		public crit_success: string,
-		public success: string,
-		public failure: string,
-		public crit_failure: string,
-    ) {}
+		offset += config.size.bodyFontSize;
+		return offset;
+	}
 }

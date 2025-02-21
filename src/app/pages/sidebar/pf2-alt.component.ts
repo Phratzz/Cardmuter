@@ -394,17 +394,8 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 			this.cardForm.get('base')?.get('name')?.value,
 			this.cardForm.get('traits')?.value,
 			this.cardForm.get('header')?.value.map((header: any) => header.map((item: any) => item)),
-			this.cardForm.get('body')?.value.map((item: any) => {
-				// check if part implements TraitInterface
-				if(item?.instance?.formatForFormSubmit) {
-					return item.instance.formatForFormSubmit(item)
-				}
-			}),
-			this.cardForm.get('footer')?.value.map((item: any) => {
-				if(item?.instance?.formatForFormSubmit) {
-					return item.instance.formatForFormSubmit(item)
-				}
-			}),
+			this.cardForm.get('body')?.value.map((item: any) => item.instance),
+			this.cardForm.get('footer')?.value.map((item: any) => item.instance),
 		);
 
 		this.renderService.newCard(newCard);
