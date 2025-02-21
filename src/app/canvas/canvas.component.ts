@@ -13,15 +13,6 @@ import { PF2AltCardRenderer } from './renderer/pf2alt.renderer';
 export class CanvasComponent {
 	@ViewChild('canvas') canvas: ElementRef<HTMLCanvasElement>;
 
-	vars = {
-		type: 'Major',
-		level: 17,
-		cost: '1250gp',
-		bonus: '+3',
-		damage: "4d8",
-		splash: "4",
-	}
-
 	data: PF2Card | PF2AltCard
 	renderer: PF2CardRenderer | PF2AltCardRenderer
 	

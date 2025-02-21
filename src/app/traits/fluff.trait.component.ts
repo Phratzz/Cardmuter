@@ -3,20 +3,20 @@ import { TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
 
 @Component({
-	templateUrl: './text.trait.component.html',
+	templateUrl: './fluff.trait.component.html',
 })
-export class TextTrait implements TraitInterface {
-    static traitName = "text"
-
+export class FluffTrait implements TraitInterface {
+    static traitName = "fluff"
+	
 	public traitForm = new FormGroup({
-		type: new FormControl(TextTrait.traitName),
+		type: new FormControl(FluffTrait.traitName),
 		text: new FormControl(''),
 	});
 
 	constructor() {}
 
-    public formatForFormSubmit(): CardBodyText {
-        return new CardBodyText(
+    public formatForFormSubmit(): CardBodyFluff {
+        return new CardBodyFluff(
             (this.traitForm.get('text')?.value) as string
 		)
     }
@@ -24,7 +24,7 @@ export class TextTrait implements TraitInterface {
 	public destroy() {}
 }
 
-export class CardBodyText {
+export class CardBodyFluff {
     text: string[];
 
     constructor(

@@ -1,0 +1,26 @@
+<mat-card [formGroup]="traitForm">
+    <mat-card-header>
+        <mat-card-title>Heighten Effect</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+		<ng-container formGroupName="lines" *ngFor="let row of getFormArray('lines')?.controls; let ii = index">
+			<block-row [formGroupName]="ii">
+				<mat-form-field appearance="outline" floatLabel="always" color="accent">
+					<mat-label>Effect</mat-label>
+					<input type="text" formControlName="effect" matInput>
+				</mat-form-field>
+				<mat-form-field appearance="outline" floatLabel="always" color="accent">
+					<mat-label>Cost</mat-label>
+					<input type="text" formControlName="cost" matInput>
+				</mat-form-field>
+				<button type="button" mat-stroked-button (click)="removeFormArray('lines', ii)">Remove line</button>
+			</block-row>
+		</ng-container>
+		
+        <block-row>
+			<button type="button" (click)="addFormArray('lines')" mat-stroked-button>Add new line</button>
+			<button type="button" mat-stroked-button (click)="destroy()">Remove Heighten</button>
+        </block-row>
+    </mat-card-content>
+</mat-card>

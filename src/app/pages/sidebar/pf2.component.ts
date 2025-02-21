@@ -1,22 +1,32 @@
-import { AfterViewInit, Component, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { AfterViewInit, Component, ComponentRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormArray, FormBuilder, FormControl } from '@angular/forms';
-import { PF2Card, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyAbilityStaffSpell, CardTrait } from 'src/app/models/pf2.card.model';
-import { RenderService } from 'src/app/services/render.service';
+import { PF2Card, CardTrait, CardTraitGroup } from '../../models/pf2.card.model';
+import { RenderService } from '../../services/render.service';
 import { SidebarBase } from './base.component';
-import { TextTrait } from 'src/app/traits/text.trait.component';
-import { FluffTrait } from 'src/app/traits/fluff.trait';
-import { ComponentLoaderService } from 'src/app/services/componentLoader.service';
+import { TextTrait } from '../../traits/text.trait.component';
+import { FluffTrait } from '../../traits/fluff.trait.component';
+import { ComponentLoaderService } from '../../services/componentLoader.service';
+import { ReplaySubject } from 'rxjs';
+import { TraitInterface } from 'app/interfaces/trait.interface';
+import { AbilityTrait } from 'app/traits/ability.trait.component';
+import { SaveTrait } from 'app/traits/save.trait.component';
+import { AdvancedTrait } from 'app/traits/advanced.trait.component';
+import { HeightenTrait } from 'app/traits/heighten.trait.component';
+import { StaffTrait } from 'app/traits/staff.trait.component';
 
 @Component({
 	selector: 'app-sidebar-pf2',
 	templateUrl: './pf2.component.html',
-	styleUrls: ['./base.scss']
+	styleUrls: ['./base.component.scss']
 })
 export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
-	public currentSampleControl = new FormControl('test')
-	public buildingParts: any[] = [];
+	public currentSampleControl = new FormControl('weapon')
+	public formLayout: PF2Card = new PF2Card()
+	public traitSearch = new FormControl<string>('');
+	public traitSearchField = new FormControl<string>('');
 
 	@ViewChild('bodyContentContainer', { read: ViewContainerRef }) bodyContentContainer: ViewContainerRef
+	@ViewChild('footerContentContainer', { read: ViewContainerRef }) footerContentContainer: ViewContainerRef
 
 	constructor(
 		private fb: FormBuilder,
@@ -25,31 +35,51 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 	) {
 		super()
 
-		this.buildingParts.push(TextTrait)
-		//this.buildingParts.push(new FluffTrait(this.fb))
+		this.formLayout.body = [
+			TextTrait,
+			FluffTrait,
+			AbilityTrait,
+			SaveTrait,
+			AdvancedTrait,
+			//HeightenTrait,
+			StaffTrait,
+		]
+		this.formLayout.footer = [
+			TextTrait,
+			FluffTrait,
+			//AbilityTrait,
+			//SaveTrait,
+			//AdvancedTrait,
+			HeightenTrait,
+			//StaffTrait,
+		]
 
-		this.loadSampleData()
-		this.onFormSubmit()
+		console.log("load initial")
+		this.loadSampleData(true)
 	}
 
 	ngAfterViewInit() {
-		this.buildingParts.forEach((part) => {
-			//this.componentLoaderService.loadDynamicComponent(this.bodyContentContainer, part)
-		})
+		this.traitSearchField.valueChanges
+			.subscribe(() => {
+				this.filterTraits();
+			});
+
+		console.log("load new")
+		this.loadSampleData()
 	}
 
-	public traits = [
-		{
-			label: 'Rarity',
-			traits: [
+	private traits = [
+		new CardTraitGroup(
+			'Rarity',
+			[
 				new CardTrait('Uncommon', 'uncommon'),
 				new CardTrait('Rare', 'rare'),
 				new CardTrait('Unique', 'unique'),
 			]
-		},
-		{
-			label: 'Type',
-			traits: [
+		),
+		new CardTraitGroup(
+			'Type',
+			[
 				new CardTrait('Adjustment'),
 				new CardTrait('Attack'),
 				new CardTrait('Alchemical'),
@@ -76,10 +106,10 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				new CardTrait('Spellshape'),
 				new CardTrait('Spellheart'),
 			]
-		},
-		{
-			label: 'Effect',
-			traits: [
+		),
+		new CardTraitGroup(
+			'Effect',
+			[
 				new CardTrait('Air'),
 				new CardTrait('Earth'),
 				new CardTrait('Fire'),
@@ -152,10 +182,10 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				new CardTrait('Virulent'),
 				new CardTrait('Vocal'),
 			]
-		},
-		{
-			label: 'Armor',
-			traits: [
+		),
+		new CardTraitGroup(
+			'Armor',
+			[
 				new CardTrait('Adjusted', 'weapon'),
 				new CardTrait('Aquadynamic', 'weapon'),
 				new CardTrait('Bulwark', 'weapon'),
@@ -167,10 +197,10 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				new CardTrait('Noisy', 'weapon'),
 				new CardTrait('Ponderous', 'weapon'),
 			]
-		},
-		{
-			label: 'Weapon',
-			traits: [
+		),
+		new CardTraitGroup(
+			'Weapon',
+			[
 				new CardTrait('Agile', 'weapon'),
 				new CardTrait('Attached', 'weapon'),
 				new CardTrait('Backstabber', 'weapon'),
@@ -250,8 +280,47 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				new CardTrait('Volley 40ft', 'weapon'),
 				new CardTrait('Volley 50ft', 'weapon'),
 			]
-		}
+		)
 	]
+	public filteredTraits: ReplaySubject<any[]> = new ReplaySubject<any[]>(1);
+
+	filterTraits() {
+		if (!this.traits) {
+		  return;
+		}
+		
+		// get the search keyword
+		let search = this.traitSearchField.value ?? '';
+		const traitCopy = this.instanceTraits();
+		if (!search) {
+		  this.filteredTraits.next(traitCopy);
+		  return;
+		} else {
+		  search = search.toLowerCase();
+		}
+
+		// filter the banks
+		this.filteredTraits.next(
+			traitCopy.filter((group: CardTraitGroup) => {
+			const showTrait = group.label.toLowerCase().indexOf(search) > -1;
+			if (!showTrait) {
+				group.traits = group.traits.filter((trait) => trait.name.toLowerCase().indexOf(search) > -1);
+			}
+			return group.traits.length > 0;
+		  })
+		);
+	}
+
+	protected instanceTraits() {
+	  const localInstance: CardTraitGroup[] = [];
+	  this.traits.forEach(trait => {
+		localInstance.push({
+		  label: trait.label,
+		  traits: trait.traits.slice()
+		});
+	  });
+	  return localInstance;
+	}
 
 	// Traits
 	onAddTrait(event: any) {
@@ -267,25 +336,33 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 	}
 	// Traits End
 
-	addComponent(type: string, component: any) {
-		this.componentLoaderService.loadDynamicComponent(this.bodyContentContainer, component)
+	addComponent(type: string, component: any, data?: any) {
+		let container: ViewContainerRef
+		switch (type) {
+			case 'body': container = this.bodyContentContainer; break;
+			case 'footer': container = this.footerContentContainer; break;
+			default: return
+		}
+
+		const addedComponent: ComponentRef<TraitInterface> = this.componentLoaderService.loadDynamicComponent(container, component)
+		addedComponent.instance.traitForm.patchValue(data);
+
+		(<FormArray>this.cardForm.get(type)).push(this.fb.control(addedComponent))
+
+		addedComponent.instance.destroy = () => {
+			const formArray = (<FormArray>this.cardForm.get(type))
+			const index = formArray.controls.findIndex((control) => control.value === addedComponent )
+
+			if(index >= 0) {
+				formArray.removeAt(index)
+			}
+
+			addedComponent.destroy()
+		}
 	}
 
 	// Form Array
 	addFormArray(position: string, type: string) {
-		this.buildingParts.forEach((part) => {
-			if(part.traitName === type) {
-				// if function is available, call it
-				if(part.getFormGroup) {
-					const formGroup = part.getFormGroup()
-					
-					if(formGroup) {
-						(<FormArray>this.cardForm.get(position)).push(formGroup)
-					}
-				}
-			}
-		})
-
 		switch (type) {
 			case 'header':
 				(<FormArray>this.cardForm.get(position)).push(
@@ -306,86 +383,6 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 						action: this.fb.control(''),
 					}))
 				break
-
-			case 'ability':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						type: this.fb.control('ability'),
-						activate: this.fb.control(''),
-						activateAction: this.fb.control(''),
-						trigger: this.fb.control(''),
-						requirement: this.fb.control(''),
-						frequency: this.fb.control(''),
-						effect: this.fb.control(''),
-					}))
-				break;
-			case 'save':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						type: this.fb.control('save'),
-						crit_success: this.fb.control(''),
-						success: this.fb.control(''),
-						failure: this.fb.control(''),
-						crit_failure: this.fb.control(''),
-					}))
-				break;
-
-			case 'heightened':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						type: this.fb.control('heightened'),
-						lines: this.fb.array([
-							this.fb.group({
-								cost: this.fb.control(''),
-								effect: this.fb.control(''),
-							})
-						])
-					}))
-				break;
-			case 'heightenedLine':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						cost: this.fb.control(''),
-						effect: this.fb.control(''),
-					}))
-				break;
-
-			case 'staff':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						type: this.fb.control('staff'),
-						levels: this.fb.array([
-							this.fb.group({
-								name: this.fb.control(''),
-								spells: this.fb.array([
-									this.fb.group({
-										name: this.fb.control(''),
-										notes: this.fb.control(''),
-									})
-								])
-							})
-						])
-					}))
-				break;
-			case 'staffLevel':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						name: this.fb.control(''),
-						spells: this.fb.array([
-							this.fb.group({
-								name: this.fb.control(''),
-								notes: this.fb.control(''),
-							})
-						])
-					}))
-				break;
-			case 'staffSpell':
-				(<FormArray>this.cardForm.get(position)).push(
-					this.fb.group({
-						name: this.fb.control(''),
-						notes: this.fb.control(''),
-					}))
-				break;
 		}
 	}
 	// Form Array End
@@ -399,43 +396,15 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 			this.cardForm.get('traits')?.value,
 			this.cardForm.get('header')?.value.map((header: any) => header.map((item: any) => item)),
 			this.cardForm.get('body')?.value.map((item: any) => {
-				const buildingPart = this.buildingParts.find(part => part.traitName === item.type)
-				if(buildingPart?.formatForFormSubmit) {
-					return buildingPart.formatForFormSubmit(item)
-				}
-
-				switch (item.type) {
-					case 'ability':
-					case 'save':
-						return new CardBodyAbility(item)
-					case 'heightened':
-						return new CardBodyAbility({
-							heightened: item.lines.map((line: any) => new CardBodyAbilityHeightened(line.cost, line.effect))
-						})
-					case 'staff':
-						return new CardBodyAbility({
-							staff: item.levels.map((level: any) =>new CardBodyAbilityStaffLevel(level.name, level.spells.map((spell: any) => new CardBodyAbilityStaffSpell(spell.name, spell.notes))))
-						})
-					default:
-						return null
+				// check if part implements TraitInterface
+				if(item?.instance?.formatForFormSubmit) {
+					return item.instance.formatForFormSubmit(item)
 				}
 			}),
 			this.cardForm.get('footer')?.value.map((item: any) => {
-				const buildingPart = this.buildingParts.find(part => part.traitName === item.type)
-				if(buildingPart?.formatForFormSubmit) {
-					return buildingPart.formatForFormSubmit(item)
-				}
-
-				switch (item.type) {
-					case 'ability':
-					case 'save':
-						return new CardBodyAbility(item)
-					case 'heightened':
-						return new CardBodyAbility({
-							heightened: item.lines.map((line: any) => new CardBodyAbilityHeightened(line.cost, line.effect))
-						})
-					default:
-						return null
+				// check if part implements TraitInterface
+				if(item?.instance?.formatForFormSubmit) {
+					return item.instance.formatForFormSubmit(item)
 				}
 			}),
 		);
@@ -477,9 +446,18 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 		this.onFormSubmit()
 	}
 
-	loadSampleData() {
-		const sampleType = this.currentSampleControl.value
-		this.currentSampleControl.setValue('')
+	loadSampleData(initalLoad: boolean = false) {
+		let sampleType = this.currentSampleControl.value
+
+		if(initalLoad) {
+			sampleType = "empty"
+		} else {
+			this.currentSampleControl.setValue('')
+		}
+
+		// remove dynamic components
+		this.bodyContentContainer?.clear()
+		this.footerContentContainer?.clear()
 
 		switch (sampleType) {
 			case 'spell':
@@ -534,35 +512,35 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 							}),
 						]),
 					]),
-					body: this.fb.array([
-						this.fb.group({
-							type: this.fb.control('fluff'),
-							text: this.fb.control('You shape three needles out of a piece of metal in your possession and send them flying in a tight group toward one target.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('text'),
-							text: this.fb.control('Make a spell attack roll against your target\'s AC. The needles deal 3d4 piercing damage and might cause bleeding. The needles impart any special properties of the metal that forms them; for instance, cold iron needles deal additional damage to creatures with weakness to cold iron. All the needles are made of the same metal, and the metal returns to you after the attack.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('save'),
-							crit_success: this.fb.control('The target takes double damage and 1 persistent bleed damage.'),
-							success: this.fb.control('The target takes full damage.'),
-							failure: this.fb.control(''),
-							crit_failure: this.fb.control(''),
-						}),
-					]),
-					footer: this.fb.array([
-						this.fb.group({
-							type: this.fb.control('heightened'),
-							lines: this.fb.array([
-								this.fb.group({
-									cost: this.fb.control('+1'),
-									effect: this.fb.control('You send one additional needle, increasing the regular damage by 1d4 and increasing the persistent bleed damage on a critical hit by 1.'),
-								}),
-							]),
-						}),
-					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
 				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'You shape three needles out of a piece of metal in your possession and send them flying in a tight group toward one target.'
+				})
+				this.addComponent('body', TextTrait, {
+					text: 'Make a spell attack roll against your target\'s AC. The needles deal 3d4 piercing damage and might cause bleeding. The needles impart any special properties of the metal that forms them; for instance, cold iron needles deal additional damage to creatures with weakness to cold iron. All the needles are made of the same metal, and the metal returns to you after the attack.'
+				})
+				this.addComponent('body', SaveTrait, {
+					crit_success: 'The target takes double damage and 1 persistent bleed damage.',
+					success: 'The target takes full damage.',
+					failure: '',
+					crit_failure: '',
+				})
+				// End Body
+
+				// Footer
+				this.addComponent('footer', HeightenTrait, {
+					lines: [
+						{
+							cost: '+1',
+							effect: 'You send one additional needle, increasing the regular damage by 1d4 and increasing the persistent bleed damage on a critical hit by 1.'
+						}
+					]
+				})
+				// End Footer
 				break
 			case 'wonderous':
 				this.cardForm = this.fb.group({
@@ -601,28 +579,26 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 							}),
 						]),
 					]),
-					body: this.fb.array([
-						this.fb.group({
-							type: this.fb.control('fluff'),
-							text: this.fb.control('As you invest these embroidered strips of cloth, you feel a wave of anger and frustraion rise up within you.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('text'),
-							text: this.fb.control('These handwraps have weapon runes etched into them to give your unarmed attacks the benefits of those runes, making your unarmed attacks work like magic weapons, treat them as melee weapons of the brawling group with a light bulk for these purposes.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('ability'),
-							activate: this.fb.control('Envision'),
-							activateAction: this.fb.control('r'),
-							trigger: this.fb.control(''),
-							requirement: this.fb.control('You were damaged by an oppoenent'),
-							frequency: this.fb.control(''),
-							effect: this.fb.control('You deal 2 additional damage with melee Strikes against the triggering opponent until the end of your next turn.'),
-						})
-					]),
-					footer: this.fb.array([
-					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
 				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'As you invest these embroidered strips of cloth, you feel a wave of anger and frustraion rise up within you.'
+				})
+				this.addComponent('body', TextTrait, {
+					text: 'These handwraps have weapon runes etched into them to give your unarmed attacks the benefits of those runes, making your unarmed attacks work like magic weapons, treat them as melee weapons of the brawling group with a light bulk for these purposes.'
+				})
+				this.addComponent('body', AbilityTrait, {
+					activate: 'Envision',
+					activateAction: 'r',
+					trigger: '',
+					requirement: 'You were damaged by an oppoenent',
+					frequency: '',
+					effect: 'You deal 2 additional damage with melee Strikes against the triggering opponent until the end of your next turn.'
+				})
+				// End Body
 				break
 			case 'weapon':
 				this.cardForm = this.fb.group({
@@ -688,33 +664,31 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 							}),
 						]),
 					]),
-					body: this.fb.array([
-						this.fb.group({
-							type: this.fb.control('fluff'),
-							text: this.fb.control('This parrying dagger for features a robust guard in the form of a dragons head, upon closer inspection the head shares features with that of o bronze dragon.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('ability'),
-							activate: this.fb.control('Strike'),
-							activateAction: this.fb.control('r'),
-							trigger: this.fb.control('A creature with the Dragon trait critically fails a strike against you'),
-							requirement: this.fb.control(''),
-							frequency: this.fb.control(''),
-							effect: this.fb.control('You take advantage of an opening from your enemy\'s fumbled attack. You can make a melee Strike against the triggering foe.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('ability'),
-							activate: this.fb.control('Strike'),
-							activateAction: this.fb.control('r'),
-							trigger: this.fb.control('A creature with the Dragon trait fails a strike against you'),
-							requirement: this.fb.control('You have the Opportune Riposte feat'),
-							frequency: this.fb.control(''),
-							effect: this.fb.control('You take advantage of an opening from your enemy\'s fumbled attack. You can make a melee Strike against the triggering foe.'),
-						}),
-					]),
-					footer: this.fb.array([
-					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
 				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'This parrying dagger for features a robust guard in the form of a dragons head, upon closer inspection the head shares features with that of o bronze dragon.'
+				})
+				this.addComponent('body', AbilityTrait, {
+					activate: 'Strike',
+					activateAction: 'r',
+					trigger: 'A creature with the Dragon trait critically fails a strike against you',
+					requirement: '',
+					frequency: '',
+					effect: 'You take advantage of an opening from your enemy\'s fumbled attack. You can make a melee Strike against the triggering foe.'
+				})
+				this.addComponent('body', AbilityTrait, {
+					activate: 'Strike',
+					activateAction: 'r',
+					trigger: 'A creature with the Dragon trait fails a strike against you',
+					requirement: 'You have the Opportune Riposte feat',
+					frequency: '',
+					effect: 'You take advantage of an opening from your enemy\'s fumbled attack. You can make a melee Strike against the triggering foe.'
+				})
+				// End Body
 				break
 			case 'formula':
 				this.cardForm = this.fb.group({
@@ -755,29 +729,28 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 							}),
 						]),
 					]),
-					body: this.fb.array([
-						this.fb.group({
-							type: this.fb.control('fluff'),
-							text: this.fb.control('Alchemist\'s fire is a combination of several volatile liquids that ignite when exposed to air.'),
-						}),
-						this.fb.group({
-							type: this.fb.control('ability'),
-							activate: this.fb.control('Strike'),
-							activateAction: this.fb.control('1'),
-							trigger: this.fb.control(''),
-							requirement: this.fb.control(''),
-							frequency: this.fb.control(''),
-							effect: this.fb.control('You throw the bomb, dealing 1d8 fire damage, 1 persistant fire damage and 1 splash fire damage'),
-						}),
-					]),
-					footer: this.fb.array([
-					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
 				})
+
+				// Body
+				this.addComponent('body', FluffTrait, {
+					text: 'Alchemist\'s fire is a combination of several volatile liquids that ignite when exposed to air.'
+				})
+				this.addComponent('body', AbilityTrait, {
+					activate: 'Strike',
+					activateAction: '1',
+					trigger: '',
+					requirement: '',
+					frequency: '',
+					effect: 'You throw the bomb, dealing 1d8 fire damage, 1 persistant fire damage and 1 splash fire damage'
+				})
+				// End Body
 				break
 			case 'test':
 				this.cardForm = this.fb.group({
 					base: this.fb.group({
-						name: this.fb.control('Alchemist\'s Fire (Lesser)'),
+						name: this.fb.control('Test Item'),
 						type: this.fb.control('Formula'),
 						color: this.fb.control('purple'),
 						level: this.fb.control('1'),
@@ -798,10 +771,8 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 							}),
 						]),
 					]),
-					body: this.fb.array([
-					]),
-					footer: this.fb.array([
-					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
 				})
 				break
 			default:
@@ -818,10 +789,8 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 					]),
 					header: this.fb.array([
 					]),
-					body: this.fb.array([
-					]),
-					footer: this.fb.array([
-					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
 				})
 				break
 		}

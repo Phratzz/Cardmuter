@@ -3,20 +3,20 @@ import { TraitInterface } from "../interfaces/trait.interface"
 import { Component } from "@angular/core";
 
 @Component({
-	templateUrl: './text.trait.component.html',
+	templateUrl: './title.trait.component.html',
 })
-export class TextTrait implements TraitInterface {
-    static traitName = "text"
+export class TitleTrait implements TraitInterface {
+    static traitName = "title"
 
 	public traitForm = new FormGroup({
-		type: new FormControl(TextTrait.traitName),
+		type: new FormControl(TitleTrait.traitName),
 		text: new FormControl(''),
 	});
 
 	constructor() {}
 
-    public formatForFormSubmit(): CardBodyText {
-        return new CardBodyText(
+    public formatForFormSubmit(): CardBodyTitle {
+        return new CardBodyTitle(
             (this.traitForm.get('text')?.value) as string
 		)
     }
@@ -24,12 +24,8 @@ export class TextTrait implements TraitInterface {
 	public destroy() {}
 }
 
-export class CardBodyText {
-    text: string[];
-
+export class CardBodyTitle {
     constructor(
-        ...text: string[]
-    ) {
-        this.text = text;
-    }
+        public text: string
+    ) {}
 }

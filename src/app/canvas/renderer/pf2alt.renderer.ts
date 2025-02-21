@@ -1,7 +1,13 @@
 import { Component, ElementRef } from '@angular/core';
-import { PF2AltCard, CardBodyAbility, CardBodyAbilityHeightened, CardBodyAbilityStaffLevel, CardBodyTitle } from '../../models/pf2-alt.card.model';
-import { CardBodyText } from 'src/app/traits/text.trait.component';
-import { CardBodyFluff } from 'src/app/traits/fluff.trait';
+import { PF2AltCard } from '../../models/pf2-alt.card.model';
+import { CardBodyText } from '../../traits/text.trait.component';
+import { CardBodyFluff } from '../../traits/fluff.trait.component';
+import { CardBodyStaff, CardBodyStaffLevel } from 'app/traits/staff.trait.component';
+import { CardBodyHeighten, CardBodyHeightenLine } from 'app/traits/heighten.trait.component';
+import { CardBodyAdvanced } from 'app/traits/advanced.trait.component';
+import { CardBodySave } from 'app/traits/save.trait.component';
+import { CardBodyAbility } from 'app/traits/ability.trait.component';
+import { CardBodyTitle } from 'app/traits/title.trait.component';
 
 @Component({
     template: ''
@@ -88,8 +94,8 @@ export class PF2AltCardRenderer {
 
 		// draw traits and header
 		if(this.data.header.length > 0 || this.data.traits.length > 0) {
-			offset = this.renderTraits(ctx, offset);
-			offset = this.renderHeader(ctx, offset);
+			if(this.data.traits.length > 0) { offset = this.renderTraits(ctx, offset); }
+			if(this.data.header.length > 0) {offset = this.renderHeader(ctx, offset); }
 			offset = this.renderLine(ctx, offset);
 		}
 
@@ -287,14 +293,25 @@ export class PF2AltCardRenderer {
 
 	private renderBody(ctx: CanvasRenderingContext2D, offset: number) {
 		this.data.body.forEach((bodyItem, index) => {
-			if (bodyItem instanceof CardBodyFluff) {
-				offset = this.renderBodyFluff(ctx, offset, bodyItem);
-			} else if (bodyItem instanceof CardBodyText) {
-				offset = this.renderBodyText(ctx, offset, bodyItem);
-			} else if (bodyItem instanceof CardBodyAbility) {
-				offset = this.renderBodyAbility(ctx, offset, bodyItem);
-			} else if (bodyItem instanceof CardBodyTitle) {
-				offset = this.renderBodyTitle(ctx, offset, bodyItem);
+			switch(true) {
+				case bodyItem instanceof CardBodyFluff:
+					offset = this.renderBodyFluff(ctx, offset, bodyItem);
+					break;
+				case bodyItem instanceof CardBodyText:
+					offset = this.renderBodyText(ctx, offset, bodyItem);
+					break;
+				case bodyItem instanceof CardBodyAbility:
+				case bodyItem instanceof CardBodySave:
+				case bodyItem instanceof CardBodyAdvanced:
+				case bodyItem instanceof CardBodyHeighten:
+				case bodyItem instanceof CardBodyStaff:
+					offset = this.renderBodyAbility(ctx, offset, bodyItem);
+					break;
+				case bodyItem instanceof CardBodyTitle:
+					offset = this.renderBodyTitle(ctx, offset, bodyItem);
+					break;
+				default:
+					console.error('Unknown body item', bodyItem);
 			}
 		})
 
@@ -311,14 +328,25 @@ export class PF2AltCardRenderer {
 		// calculate total height of footer
 		let height: number = 0
 		this.data.footer.forEach((footerItem, index) => {
-			if (footerItem instanceof CardBodyFluff) {
-				height = this.renderBodyFluff(ctx, height, footerItem, false);
-			} else if (footerItem instanceof CardBodyText) {
-				height = this.renderBodyText(ctx, height, footerItem, false);
-			} else if (footerItem instanceof CardBodyAbility) {
-				height = this.renderBodyAbility(ctx, height, footerItem, false);
-			} else if (footerItem instanceof CardBodyTitle) {
-				height = this.renderBodyTitle(ctx, height, footerItem, false);
+			switch(true) {
+				case footerItem instanceof CardBodyFluff:
+					height = this.renderBodyFluff(ctx, height, footerItem, false);
+					break;
+				case footerItem instanceof CardBodyText:
+					height = this.renderBodyText(ctx, height, footerItem, false);
+					break;
+				case footerItem instanceof CardBodyAbility:
+				case footerItem instanceof CardBodySave:
+				case footerItem instanceof CardBodyAdvanced:
+				case footerItem instanceof CardBodyHeighten:
+				case footerItem instanceof CardBodyStaff:
+					height = this.renderBodyAbility(ctx, height, footerItem, false);
+					break;
+				case footerItem instanceof CardBodyTitle:
+					height = this.renderBodyTitle(ctx, height, footerItem, false);
+					break;
+				default:
+					console.error('Unknown body item', footerItem);
 			}
 		})
 
@@ -328,14 +356,25 @@ export class PF2AltCardRenderer {
 		// Draw footer
 		let offset: number = this.config.size.height - height - this.config.size.titleFontOffset + this.config.size.textMargin;
 		this.data.footer.forEach((footerItem, index) => {
-			if (footerItem instanceof CardBodyFluff) {
-				offset = this.renderBodyFluff(ctx, offset, footerItem);
-			} else if (footerItem instanceof CardBodyText) {
-				offset = this.renderBodyText(ctx, offset, footerItem);
-			} else if (footerItem instanceof CardBodyAbility) {
-				offset = this.renderBodyAbility(ctx, offset, footerItem);
-			} else if (footerItem instanceof CardBodyTitle) {
-				offset = this.renderBodyTitle(ctx, offset, footerItem);
+			switch(true) {
+				case footerItem instanceof CardBodyFluff:
+					offset = this.renderBodyFluff(ctx, offset, footerItem);
+					break;
+				case footerItem instanceof CardBodyText:
+					offset = this.renderBodyText(ctx, offset, footerItem);
+					break;
+				case footerItem instanceof CardBodyAbility:
+				case footerItem instanceof CardBodySave:
+				case footerItem instanceof CardBodyAdvanced:
+				case footerItem instanceof CardBodyHeighten:
+				case footerItem instanceof CardBodyStaff:
+					offset = this.renderBodyAbility(ctx, offset, footerItem);
+					break;
+				case footerItem instanceof CardBodyTitle:
+					offset = this.renderBodyTitle(ctx, offset, footerItem);
+					break;
+				default:
+					console.error('Unknown body item', footerItem);
 			}
 		})
 
@@ -421,7 +460,7 @@ export class PF2AltCardRenderer {
 		return offset;
 	}
 
-	private renderBodyAbility(ctx: CanvasRenderingContext2D, offset: number, bodyItem: CardBodyAbility, draw: boolean = true) {
+	private renderBodyAbility(ctx: CanvasRenderingContext2D, offset: number, bodyItem: any, draw: boolean = true) {
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
 		const bodyFontAlign = 'left';
@@ -451,7 +490,7 @@ export class PF2AltCardRenderer {
 
 			if(key === 'heightened' && Array.isArray(value)) {
 				value.forEach((heightened) => {
-					if(heightened instanceof CardBodyAbilityHeightened) {
+					if(heightened instanceof CardBodyHeightenLine) {
 						offset = this.renderBodyAbilityLine(ctx, offset, `Heightened (${heightened.name})`, heightened.value, bodyItem, draw);
 					}
 				})
@@ -460,7 +499,7 @@ export class PF2AltCardRenderer {
 
 			if(key === 'staff' && Array.isArray(value)) {
 				value.forEach((level) => {
-					if(level instanceof CardBodyAbilityStaffLevel) {
+					if(level instanceof CardBodyStaffLevel) {
 						const spelltext = level.spells.reduce((text, spell) => {
 							if(text.length > 0) {
 								text += ', '

@@ -1,0 +1,43 @@
+<mat-card [formGroup]="traitForm">
+    <mat-card-header>
+        <mat-card-title>Staff</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+		<block-flow>
+			<mat-card formGroupName="levels" *ngFor="let row of getFormArray('levels')?.controls; let ii = index">
+				<mat-card-content>
+					<block-row [formGroupName]="ii">
+						<mat-form-field appearance="outline" floatLabel="always" color="accent">
+							<mat-label>Spell Tier</mat-label>
+							<input type="text" formControlName="name" matInput>
+						</mat-form-field>
+						<button type="button" mat-stroked-button (click)="removeFormArray('levels', ii)">Remove Level</button>
+						<button type="button" mat-stroked-button (click)="addFormArray('levels.'+ii+'.spells', 'spell')">Add spell</button>
+					</block-row>
+
+					<ng-container [formGroupName]="ii">
+						<ng-container formArrayName="spells" *ngFor="let row of getFormArray('levels.'+ii+'.spells')?.controls; let iii = index">
+							<block-row [formGroupName]="iii">
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Spell Name</mat-label>
+									<input type="text" formControlName="name" matInput>
+								</mat-form-field>
+								<mat-form-field appearance="outline" floatLabel="always" color="accent">
+									<mat-label>Notes</mat-label>
+									<input type="text" formControlName="notes" matInput>
+								</mat-form-field>
+								<button type="button" mat-stroked-button (click)="removeFormArray('levels.'+ii+'.spells', iii)">Remove spell</button>
+							</block-row>
+						</ng-container>
+					</ng-container>
+				</mat-card-content>
+			</mat-card>
+		</block-flow>
+		
+        <block-row>
+			<button type="button" (click)="addFormArray('levels', 'level')" mat-stroked-button>Add new tier</button>
+			<button type="button" mat-stroked-button (click)="destroy()">Remove Staff</button>
+        </block-row>
+    </mat-card-content>
+</mat-card>

@@ -69,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "cardmuter:build:production"
+              "browserTarget": "cardmuter:build:production"
             },
             "development": {
-              "buildTarget": "cardmuter:build:development"
+              "browserTarget": "cardmuter:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -80,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "cardmuter:build"
+            "browserTarget": "cardmuter:build"
           }
         },
         "test": {

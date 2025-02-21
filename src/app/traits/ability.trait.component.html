@@ -1,0 +1,50 @@
+<mat-card [formGroup]="traitForm">
+    <mat-card-header>
+        <mat-card-title>Ability</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Activate</mat-label>
+				<input type="text" formControlName="activate" matInput>
+			</mat-form-field>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Action</mat-label>
+				<input type="text" formControlName="activateAction" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Trigger</mat-label>
+				<input type="text" formControlName="trigger" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Requirement</mat-label>
+				<input type="text" formControlName="requirement" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Frequency</mat-label>
+				<input type="text" formControlName="frequency" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Effect</mat-label>
+				<textarea type="text" formControlName="effect" matInput></textarea>
+			</mat-form-field>
+		</block-row>
+
+        <block-row>
+            <button type="button" mat-stroked-button (click)="destroy()">Remove Ability</button>
+        </block-row>
+    </mat-card-content>
+</mat-card>

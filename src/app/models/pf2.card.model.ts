@@ -11,6 +11,12 @@ export class PF2Card {
     ) {}
 }
 
+export class CardTraitGroup {
+	constructor(
+		public label: string,
+		public traits: CardTrait[],
+	) {}
+}
 export class CardTrait {
     constructor(
         public name: string,
@@ -45,70 +51,4 @@ export class CardHeaderItem {
         public value: string,
         public action: string = '',
     ) {}
-}
-
-export class CardBodyAbilityHeightened {
-    constructor(
-        public name: string,
-        public value: string,
-    ) {}
-}
-
-export class CardBodyAbilityStaffLevel {
-    constructor(
-        public name: string,
-        public spells: CardBodyAbilityStaffSpell[],
-    ) {}
-}
-export class CardBodyAbilityStaffSpell {
-    constructor(
-        public name: string,
-        public notes: string,
-    ) {}
-}
-
-export class CardBodyAbility {
-    activate: string;
-    activateAction?: string;
-    effect: string | string[];
-    frequency?: string;
-    requirement?: string;
-    trigger?: string;
-    traits?: string[];
-    success?: string;
-    failure?: string;
-    crit_success?: string;
-    crit_failure?: string;
-    heightened?: CardBodyAbilityHeightened[];
-    staff?: CardBodyAbilityStaffLevel[];
-
-    constructor({
-        activate = '',
-        activateAction = '',
-        effect = <string|string[]>'',
-        frequency = '',
-        requirement = '',
-        trigger = '',
-        traits = [],
-        success = '',
-        failure = '',
-        crit_success = '',
-        crit_failure = '',
-        heightened = <CardBodyAbilityHeightened[]>[],
-        staff = <CardBodyAbilityStaffLevel[]>[],
-    }) {
-        this.activate = activate;
-        this.activateAction = activateAction;
-        this.effect = effect;
-        this.frequency = frequency;
-        this.requirement = requirement;
-        this.trigger = trigger;
-        this.traits = traits;
-        this.success = success;
-        this.failure = failure;
-        this.crit_success = crit_success;
-        this.crit_failure = crit_failure;
-        this.heightened = heightened;
-        this.staff = staff;
-    }
 }

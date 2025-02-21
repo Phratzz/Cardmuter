@@ -1,0 +1,39 @@
+<mat-card [formGroup]="traitForm">
+    <mat-card-header>
+        <mat-card-title>Save</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Critical Success</mat-label>
+				<input type="text" formControlName="crit_success" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Success</mat-label>
+				<input type="text" formControlName="success" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Failure</mat-label>
+				<input type="text" formControlName="failure" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Critical Failure</mat-label>
+				<input type="text" formControlName="crit_failure" matInput>
+			</mat-form-field>
+		</block-row>
+
+        <block-row>
+            <button type="button" mat-stroked-button (click)="destroy()">Remove Save</button>
+        </block-row>
+    </mat-card-content>
+</mat-card>
