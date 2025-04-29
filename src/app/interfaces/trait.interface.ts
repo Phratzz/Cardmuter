@@ -91,7 +91,13 @@ export class TraitBase {
 		ctx.fillText(lineText, horizontalOffset, offset);
 	}
 
-	public render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+	public renderItem(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+		this.preRender(ctx, config, offset, draw)
+		this.render(ctx, config, offset, draw)
+		this.postRender(ctx, config, offset, draw)
+	}
+
+	private preRender(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
 		const bodyFont = 'GoodPro';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
@@ -103,20 +109,35 @@ export class TraitBase {
 		ctx.textBaseline = bodyFontBaseline;
 	}
 
+	public render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+	}
+
+	public postRender(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+	}
+
 	protected renderLine(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, key: string, value: string, draw: boolean = true) {
 		const bodyFont = 'GoodPro';
 		const bodyFontBold = 'GoodPro-Bold';
 		const bodyFontAction = 'PF2-Action';
 		let textOffset = 0;
 
-		// write exploded key in bold
-		const keyTexts = key.split('_');
-		keyTexts.forEach((keyText) => {
-			const keySingle = `${keyText[0].toUpperCase()}${keyText.slice(1)}`;
-			ctx.font = `${config.size.bodyFontSize}px ${bodyFontBold}`;
-			if(draw) { ctx.fillText(keySingle, config.size.textContainerOffset + textOffset, offset); }
-			textOffset += ctx.measureText(keySingle).width + ctx.measureText(' ').width;
-		})
+		if(key === 'activate' && this.traitForm.get('name')?.value) {
+			// for "Name" lines, write the name in bold then stop
+			const activateName = this.traitForm.get('name')?.value
+
+			ctx.font = `${config.size.bodyFontSize}px ${bodyFontBold}`
+			if(draw) { ctx.fillText(activateName, config.size.textContainerOffset, offset) }
+			textOffset = ctx.measureText(activateName).width + ctx.measureText(' ').width
+		} else {
+			// write exploded key in bold
+			const keyTexts = key.split('_')
+			keyTexts.forEach((keyText) => {
+				const keySingle = `${keyText[0].toUpperCase()}${keyText.slice(1)}`
+				ctx.font = `${config.size.bodyFontSize}px ${bodyFontBold}`
+				if(draw) { ctx.fillText(keySingle, config.size.textContainerOffset + textOffset, offset) }
+				textOffset += ctx.measureText(keySingle).width + ctx.measureText(' ').width
+			})
+		}
 
 		// write spacing
 		ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;
@@ -125,16 +146,22 @@ export class TraitBase {
 
 		// if action, check if there is an action
 		if(key === 'activate' && this.traitForm.get('activateAction')?.value) {
-			const activateAction: string = this.traitForm.get('activateAction')?.value ?? '';
+			const activateActions: string[] = [...this.traitForm.get('activateAction')?.value ?? '']
 
-			ctx.font = `${config.size.bodyFontSize}px ${bodyFontAction}`;
-			if(draw) { ctx.fillText(activateAction, config.size.textContainerOffset + textOffset, offset); }
-			textOffset += ctx.measureText(activateAction).width;
+			activateActions.forEach((activateAction, key) => {
+				ctx.font = `${config.size.bodyFontSize}px ${bodyFontAction}`
+				if(draw) { ctx.fillText(activateAction, config.size.textContainerOffset + textOffset, offset) }
+				textOffset += ctx.measureText(activateAction).width
 
-			// write spacing
-			ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;
-			if(draw) { ctx.fillText(" ", config.size.textContainerOffset + textOffset, offset); }
-			textOffset += ctx.measureText(" ").width;
+				let spaceingText = " "
+				if(key < activateActions.length - 1) {
+					spaceingText = " to "
+				}
+				
+				ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`
+				if(draw) { ctx.fillText(spaceingText, config.size.textContainerOffset + textOffset, offset) }
+				textOffset += ctx.measureText(spaceingText).width
+			})
 		}
 
 		ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;

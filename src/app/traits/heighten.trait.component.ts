@@ -29,8 +29,6 @@ export class HeightenTrait extends TraitBase implements TraitInterface {
 	}
 
 	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
-		super.render(ctx, config, offset, draw);
-		
 		this.traitForm.get('lines')?.value.forEach((heightened: any) => {
 			
 			offset = this.renderLine(ctx, config, offset, `Heightened (${heightened.cost})`, heightened.effect, draw);

@@ -15,8 +15,6 @@ export class TextTrait extends TraitBase implements TraitInterface {
 	});
 
 	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
-		super.render(ctx, config, offset, draw);
-
 		const bodyFont = 'GoodPro';
 		ctx.font = `${config.size.bodyFontSize}px ${bodyFont}`;
 

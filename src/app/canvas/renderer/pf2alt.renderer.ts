@@ -253,7 +253,7 @@ export class PF2AltCardRenderer {
 	private renderBody(ctx: CanvasRenderingContext2D, offset: number) {
 		this.data.body.forEach((bodyItem, index) => {
 			console.log(bodyItem)
-			offset = bodyItem.render(ctx, this.config, offset)
+			offset = bodyItem.renderItem(ctx, this.config, offset)
 		})
 
 		return offset;
@@ -269,7 +269,7 @@ export class PF2AltCardRenderer {
 		// calculate total height of footer
 		let height: number = 0
 		this.data.footer.forEach((footerItem, index) => {
-			height = footerItem.render(ctx, this.config, height, false)
+			height = footerItem.renderItem(ctx, this.config, height, false)
 		})
 
 		// Draw Line on top of footer
@@ -278,7 +278,7 @@ export class PF2AltCardRenderer {
 		// Draw footer
 		let offset: number = this.config.size.height - height - this.config.size.titleFontOffset + this.config.size.textMargin;
 		this.data.footer.forEach((footerItem, index) => {
-			offset = footerItem.render(ctx, this.config, offset)
+			offset = footerItem.renderItem(ctx, this.config, offset)
 		})
 
 		return offset;

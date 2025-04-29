@@ -15,8 +15,6 @@ export class CheckboxTrait extends TraitBase implements TraitInterface {
 	});
 
 	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
-		super.render(ctx, config, offset, draw);
-
 		ctx.fillStyle = '#000';
 		ctx.lineWidth = config.size.checkWidth;
 		

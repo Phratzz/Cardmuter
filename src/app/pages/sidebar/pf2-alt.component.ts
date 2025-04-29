@@ -17,6 +17,7 @@ import { TitleTrait } from 'app/traits/title.trait.component';
 import { CheckboxTrait } from 'app/traits/checkbox.trait.component';
 import { HuntingTrait } from 'app/traits/hunting.trait.component';
 import { CookingTrait } from 'app/traits/cooking.trait.component';
+import { LineTrait } from 'app/traits/line.trait.component';
 
 @Component({
 	selector: 'app-sidebar-pf2-alt',
@@ -24,7 +25,7 @@ import { CookingTrait } from 'app/traits/cooking.trait.component';
 	styleUrls: ['./base.component.scss']
 })
 export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit {
-	public currentSampleControl = new FormControl('test')
+	public currentSampleControl = new FormControl('hunting')
 	public formLayout: PF2AltCard = new PF2AltCard()
 	public traitSearch = new FormControl<string>('');
 	public traitSearchField = new FormControl<string>('');
@@ -50,6 +51,7 @@ export class PF2AltSidebarComponent extends SidebarBase implements AfterViewInit
 			//TitleTrait,
 			HuntingTrait,
 			CookingTrait,
+			LineTrait,
 		]
 		this.formLayout.footer = [
 			TextTrait,

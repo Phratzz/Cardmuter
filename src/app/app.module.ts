@@ -25,6 +25,8 @@ import { TitleTrait } from './traits/title.trait.component';
 import { CheckboxTrait } from './traits/checkbox.trait.component';
 import { HuntingTrait } from './traits/hunting.trait.component';
 import { CookingTrait } from './traits/cooking.trait.component';
+import { LineTrait } from './traits/line.trait.component';
+import { ActionTrait } from './traits/action.trait.component';
 
 
 @NgModule({
@@ -47,6 +49,8 @@ import { CookingTrait } from './traits/cooking.trait.component';
 		CheckboxTrait,
 		HuntingTrait,
 		CookingTrait,
+		LineTrait,
+		ActionTrait,
 
 		BlockFlowComponent,
 		BlockRowComponent,

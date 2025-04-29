@@ -3,15 +3,12 @@ import { Component } from "@angular/core";
 import { AdvancedTrait } from "./advanced.trait.component";
 
 @Component({
-	templateUrl: './save.trait.component.html',
+	templateUrl: './action.trait.component.html',
 })
-export class SaveTrait extends AdvancedTrait implements TraitInterface {
-    static override traitName = "save"
-	
+export class ActionTrait extends AdvancedTrait implements TraitInterface {
+    static override traitName = "action"
+
 	override traitOrder: string[] = [
-		'crit_success',
-		'success',
-		'failure',
-		'crit_failure',
+		'activate',
 	]
 }

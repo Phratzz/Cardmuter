@@ -1,0 +1,29 @@
+<mat-card [formGroup]="traitForm">
+    <mat-card-header>
+        <mat-card-title>Action</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Name</mat-label>
+				<input type="text" formControlName="name" matInput>
+			</mat-form-field>
+		</block-row>
+
+		<block-row>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Activate</mat-label>
+				<input type="text" formControlName="activate" matInput>
+			</mat-form-field>
+			<mat-form-field appearance="outline" floatLabel="always" color="accent">
+				<mat-label>Action</mat-label>
+				<input type="text" formControlName="activateAction" matInput>
+			</mat-form-field>
+		</block-row>
+
+        <block-row>
+            <button type="button" mat-stroked-button (click)="destroy()">Remove Action</button>
+        </block-row>
+    </mat-card-content>
+</mat-card>

@@ -13,6 +13,8 @@ import { SaveTrait } from 'app/traits/save.trait.component';
 import { AdvancedTrait } from 'app/traits/advanced.trait.component';
 import { HeightenTrait } from 'app/traits/heighten.trait.component';
 import { StaffTrait } from 'app/traits/staff.trait.component';
+import { LineTrait } from 'app/traits/line.trait.component';
+import { ActionTrait } from 'app/traits/action.trait.component';
 
 @Component({
 	selector: 'app-sidebar-pf2',
@@ -20,7 +22,7 @@ import { StaffTrait } from 'app/traits/staff.trait.component';
 	styleUrls: ['./base.component.scss']
 })
 export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
-	public currentSampleControl = new FormControl('weapon')
+	public currentSampleControl = new FormControl('infosheet')
 	public formLayout: PF2Card = new PF2Card()
 	public traitSearch = new FormControl<string>('');
 	public traitSearchField = new FormControl<string>('');
@@ -41,6 +43,7 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 			AbilityTrait,
 			SaveTrait,
 			AdvancedTrait,
+			ActionTrait,
 			//HeightenTrait,
 			StaffTrait,
 		]
@@ -830,6 +833,51 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 					effect: 'You throw the bomb, dealing 1d8 fire damage, 1 persistant fire damage and 1 splash fire damage'
 				})
 				// End Body
+				break
+			case 'infosheet':
+				this.cardForm = this.fb.group({
+					base: this.fb.group({
+						name: this.fb.control('Actions on shipdeck'),
+						type: this.fb.control(''),
+						color: this.fb.control('cyan'),
+						level: this.fb.control(''),
+						punctureHole: this.fb.control(false),
+					}),
+					traitInput: this.fb.control(''),
+					traits: this.fb.control([
+					]),
+					header: this.fb.array([
+					]),
+					body: this.fb.array([]),
+					footer: this.fb.array([]),
+				})
+
+				// Body
+				this.addComponent('body', TextTrait, {
+					text: 'While on the deck of a ship, you can perform the following actions'
+				})
+				this.addComponent('body', LineTrait, {})
+				this.addComponent('body', AdvancedTrait, {
+					name: 'Swing in rigging',
+
+					activate: '(move)',
+					activateAction: '1',
+					effect: 'You may make an acrobatics or atheltics check against DC 15, if you are currently up in the rigging or sails, you get a +5 to +10 circumstance bonus on your check to swing in the rigging',
+					frequency: '',
+					requirement: 'You are onboard a ship and not below deck',
+					trigger: '',
+			
+					crit_success: 'As success, except you swing an additional 5 feet',
+					success: 'You swing up to a distance equal to your check result rounded up to the nearest 5 feet.',
+					failure: 'You swing 15 feet',
+					crit_failure: 'You swing 15 feet, and fall prone',
+				})
+				this.addComponent('body', LineTrait, {})
+				// End Body
+
+				// Footer
+				// End Footer
+
 				break
 			case 'test':
 				this.cardForm = this.fb.group({

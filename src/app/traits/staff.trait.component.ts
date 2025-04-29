@@ -51,8 +51,6 @@ export class StaffTrait extends TraitBase implements TraitInterface {
 	}
 
 	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
-		super.render(ctx, config, offset, draw);
-
 		this.traitForm.get('levels')?.value.forEach((level) => {
 			const spelltext = level.spells.reduce((text, spell) => {
 				if(text.length > 0) {

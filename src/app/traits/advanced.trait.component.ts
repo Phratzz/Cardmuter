@@ -11,6 +11,8 @@ export class AdvancedTrait extends TraitBase implements TraitInterface {
 
 	override traitForm = new FormGroup({
 		type: new FormControl(AdvancedTrait.traitName),
+		name: new FormControl(''),
+		
 		activate: new FormControl(''),
 		activateAction: new FormControl(''),
 		effect: new FormControl(''),
@@ -22,24 +24,23 @@ export class AdvancedTrait extends TraitBase implements TraitInterface {
 		success: new FormControl(''),
 		failure: new FormControl(''),
 		crit_failure: new FormControl(''),
-	});
+	})
+
+	public traitOrder = [
+		'activate',
+		'trigger',
+		'requirement',
+		'frequency',
+		'effect',
+
+		'crit_success',
+		'success',
+		'failure',
+		'crit_failure',
+	]
 	
 	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
-		super.render(ctx, config, offset, draw);
-
-		const writingOrder = [
-			'activate',
-			'trigger',
-			'requirement',
-			'frequency',
-			'effect',
-
-			'crit_success',
-			'success',
-			'failure',
-			'crit_failure',
-		]
-		writingOrder.forEach((key) => {
+		this.traitOrder.forEach((key) => {
 			let value = this.traitForm.get(key)?.value;
 			if(!value || (Array.isArray(value) && value.length === 0)) { return; }
 

@@ -6,6 +6,7 @@
 	<mat-button-toggle value="weapon">Weapon</mat-button-toggle>
 	<mat-button-toggle value="armor">Armor</mat-button-toggle>
 	<mat-button-toggle value="formula">Formula</mat-button-toggle>
+	<mat-button-toggle value="infosheet">Info Sheet</mat-button-toggle>
 </mat-button-toggle-group>
 
 <form [formGroup]="cardForm" (ngSubmit)="onFormSubmit()">
@@ -35,7 +36,7 @@
 							<mat-option value="green">Green (Monsters)</mat-option>
 							<mat-option value="yellow">Yellow (Projects)</mat-option>
 							<mat-option value="purple">Purple (Formulas)</mat-option>
-							<mat-option value="cyan">Cyan</mat-option>
+							<mat-option value="cyan">Cyan (Handouts)</mat-option>
 							<mat-option value="grey">Grey (Goods)</mat-option>
 						</mat-select>
 					</mat-form-field>
