@@ -42,7 +42,10 @@ export class AdvancedTrait extends TraitBase implements TraitInterface {
 	override render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
 		this.traitOrder.forEach((key) => {
 			let value = this.traitForm.get(key)?.value;
-			if(!value || (Array.isArray(value) && value.length === 0)) { return; }
+			
+			if(key != 'activate' || !this.traitForm.get('activateAction')?.value) {
+				if(!value || (Array.isArray(value) && value.length === 0)) { return; }
+			}
 
 			offset = this.renderLine(ctx, config, offset, key, value, draw);
 

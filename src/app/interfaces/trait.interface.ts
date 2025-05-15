@@ -92,12 +92,14 @@ export class TraitBase {
 	}
 
 	public renderItem(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
-		this.preRender(ctx, config, offset, draw)
-		this.render(ctx, config, offset, draw)
-		this.postRender(ctx, config, offset, draw)
+		offset = this.preRender(ctx, config, offset, draw) ?? offset
+		offset = this.render(ctx, config, offset, draw) ?? offset
+		offset = this.postRender(ctx, config, offset, draw) ?? offset
+
+		return offset
 	}
 
-	private preRender(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+	private preRender(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true): number | void {
 		const bodyFont = 'GoodPro';
 		const bodyFontColor = '#000';
 		const bodyFontBaseline = 'top';
@@ -109,10 +111,10 @@ export class TraitBase {
 		ctx.textBaseline = bodyFontBaseline;
 	}
 
-	public render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+	public render(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true): number | void {
 	}
 
-	public postRender(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true) {
+	public postRender(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, draw: boolean = true): number | void {
 	}
 
 	protected renderLine(ctx: CanvasRenderingContext2D, config: CardConfig, offset: number, key: string, value: string, draw: boolean = true) {

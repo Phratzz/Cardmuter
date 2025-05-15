@@ -46,6 +46,7 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 			ActionTrait,
 			//HeightenTrait,
 			StaffTrait,
+			LineTrait,
 		]
 		this.formLayout.footer = [
 			TextTrait,
@@ -99,6 +100,7 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				new CardTrait('Invested'),
 				new CardTrait('Magical'),
 				new CardTrait('Metamagic'),
+				new CardTrait('Mythic'),
 				new CardTrait('Talisman'),
 				new CardTrait('Tattoo'),
 				new CardTrait('Trap'),
@@ -176,6 +178,7 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 				new CardTrait('Secret'),
 				new CardTrait('Sleep'),
 				new CardTrait('Splash'),
+				new CardTrait('Spirit'),
 				new CardTrait('Summoned'),
 				new CardTrait('Tech'),
 				new CardTrait('Telepathy'),
@@ -866,13 +869,28 @@ export class PF2SidebarComponent extends SidebarBase implements AfterViewInit {
 					frequency: '',
 					requirement: 'You are onboard a ship and not below deck',
 					trigger: '',
-			
-					crit_success: 'As success, except you swing an additional 5 feet',
+					
+					crit_success: 'As success, except you gain a +2 circumstance bonus to the next Strike you make before the end of your turn.',
 					success: 'You swing up to a distance equal to your check result rounded up to the nearest 5 feet.',
 					failure: 'You swing 15 feet',
 					crit_failure: 'You swing 15 feet, and fall prone',
 				})
 				this.addComponent('body', LineTrait, {})
+				this.addComponent('body', ActionTrait, {
+					name: 'Aim',
+					activate: '',
+					activateAction: '13',
+				})
+				this.addComponent('body', ActionTrait, {
+					name: 'Load',
+					activate: '(manipulate)',
+					activateAction: '13',
+				})
+				this.addComponent('body', ActionTrait, {
+					name: 'Launch',
+					activate: '(manipulate, attack)',
+					activateAction: '1',
+				})
 				// End Body
 
 				// Footer
